@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "whose-words",
+      "runtimeExecutable": "/Users/kellysu/.local/bin/uv",
+      "runtimeArgs": ["run", "python", "server.py"],
+      "port": 8000
+    }
+  ]
+}

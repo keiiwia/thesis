@@ -1,0 +1,32 @@
+{
+  "graphs": [
+    {
+      "slug": "q22-t4",
+      "scan": "mwhanna/gemma-scope-2-270m-it//transcoder_all/width_16k_l0_small_affine",
+      "transcoder_list": [],
+      "prompt_tokens": [
+        "<bos>",
+        "<start_of_turn>",
+        "user",
+        "\n",
+        "where",
+        " is",
+        " my",
+        " dog",
+        "?",
+        "<end_of_turn>",
+        "\n",
+        "<start_of_turn>",
+        "model",
+        "\n",
+        "I",
+        " am",
+        " testing",
+        " a"
+      ],
+      "prompt": "<bos><start_of_turn>user\nwhere is my dog?<end_of_turn>\n<start_of_turn>model\nI am testing a",
+      "node_threshold": 0.8,
+      "schema_version": 1
+    }
+  ]
+}

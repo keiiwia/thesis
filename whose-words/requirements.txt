@@ -1,0 +1,5 @@
+circuit-tracer @ git+https://github.com/safety-research/circuit-tracer.git@7f66876689f59e92fc3641650d38b8bd41749ec4
+transformers==4.57.3
+huggingface_hub<1.0
+fastapi
+uvicorn
