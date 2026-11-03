@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in" viewBox="0 0 816 1056">
+<title>cipher wheel · inner disk</title><style>text{font-family:Helvetica,Arial,sans-serif;fill:#000} .h{font-size:16px;font-weight:700} .t{font-size:13px}
+.s{font-size:11px;fill:#444} .L{font-family:Menlo,Courier,monospace;font-size:26px;font-weight:700} .n{font-size:12px;fill:#444}
+.c{font-family:Menlo,Courier,monospace;font-size:19px;letter-spacing:2px} .k{font-family:Menlo,Courier,monospace;font-size:12px;fill:#444}</style><rect width="816" height="1056" fill="#fff"/>
+<text x="48" y="54" class="h">Babel cipher wheel · inner disk (turns)</text>
+<text x="48" y="74" class="s">Cut on the outer circle. Pin through both centres so this disk turns inside the outer one's letters.</text>
+<circle cx="408.0" cy="548.0" r="258" fill="#fff" stroke="#000" stroke-width="1.4"/>
+<circle cx="408.0" cy="548.0" r="160" fill="none" stroke="#000" stroke-width="0.8"/>
+<line x1="390.7" y1="388.9" x2="380.1" y2="291.5" stroke="#000" stroke-width="0.8"/>
+<text x="408.0" y="328.0" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(0.00 408.0 328.0)">a</text>
+<text x="408.0" y="372.0" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(0.00 408.0 372.0)">0</text>
+<line x1="425.3" y1="388.9" x2="435.9" y2="291.5" stroke="#000" stroke-width="0.8"/>
+<text x="455.3" y="333.1" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(12.41 455.3 333.1)">b</text>
+<text x="445.8" y="376.1" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(12.41 445.8 376.1)">1</text>
+<line x1="459.1" y1="396.4" x2="490.4" y2="303.5" stroke="#000" stroke-width="0.8"/>
+<text x="500.4" y="348.3" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(24.83 500.4 348.3)">c</text>
+<text x="481.9" y="388.3" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(24.83 481.9 388.3)">2</text>
+<line x1="490.5" y1="410.9" x2="541.0" y2="326.9" stroke="#000" stroke-width="0.8"/>
+<text x="541.1" y="372.9" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(37.24 541.1 372.9)">d</text>
+<text x="514.5" y="407.9" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(37.24 514.5 407.9)">3</text>
+<line x1="518.0" y1="431.8" x2="585.4" y2="360.7" stroke="#000" stroke-width="0.8"/>
+<text x="575.7" y="405.6" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(49.66 575.7 405.6)">e</text>
+<text x="542.1" y="434.1" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(49.66 542.1 434.1)">4</text>
+<line x1="540.4" y1="458.2" x2="621.5" y2="403.2" stroke="#000" stroke-width="0.8"/>
+<text x="602.4" y="445.0" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(62.07 602.4 445.0)">f</text>
+<text x="563.5" y="465.6" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(62.07 563.5 465.6)">5</text>
+<line x1="556.6" y1="488.8" x2="647.7" y2="452.5" stroke="#000" stroke-width="0.8"/>
+<text x="620.0" y="489.1" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(74.48 620.0 489.1)">g</text>
+<text x="577.6" y="500.9" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(74.48 577.6 500.9)">6</text>
+<line x1="565.9" y1="522.1" x2="662.6" y2="506.3" stroke="#000" stroke-width="0.8"/>
+<text x="627.7" y="536.1" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(86.90 627.7 536.1)">h</text>
+<text x="583.7" y="538.5" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(86.90 583.7 538.5)">7</text>
+<line x1="567.8" y1="556.7" x2="665.6" y2="562.0" stroke="#000" stroke-width="0.8"/>
+<text x="625.1" y="583.6" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(99.31 625.1 583.6)">i</text>
+<text x="581.7" y="576.5" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(99.31 581.7 576.5)">8</text>
+<line x1="562.2" y1="590.8" x2="656.6" y2="617.0" stroke="#000" stroke-width="0.8"/>
+<text x="612.4" y="629.4" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(111.72 612.4 629.4)">j</text>
+<text x="571.5" y="613.1" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(111.72 571.5 613.1)">9</text>
+<line x1="549.4" y1="622.9" x2="635.9" y2="668.8" stroke="#000" stroke-width="0.8"/>
+<text x="590.1" y="671.5" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(124.14 590.1 671.5)">k</text>
+<text x="553.7" y="646.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(124.14 553.7 646.8)">10</text>
+<line x1="529.9" y1="651.6" x2="604.6" y2="715.0" stroke="#000" stroke-width="0.8"/>
+<text x="559.3" y="707.7" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(136.55 559.3 707.7)">l</text>
+<text x="529.0" y="675.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(136.55 529.0 675.8)">11</text>
+<line x1="504.8" y1="675.4" x2="564.1" y2="753.4" stroke="#000" stroke-width="0.8"/>
+<text x="521.4" y="736.5" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(148.97 521.4 736.5)">m</text>
+<text x="498.7" y="698.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(148.97 498.7 698.8)">12</text>
+<line x1="475.2" y1="693.2" x2="516.3" y2="782.2" stroke="#000" stroke-width="0.8"/>
+<text x="478.2" y="756.5" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(161.38 478.2 756.5)">n</text>
+<text x="464.2" y="714.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(161.38 464.2 714.8)">13</text>
+<line x1="442.4" y1="704.3" x2="463.5" y2="800.0" stroke="#000" stroke-width="0.8"/>
+<text x="431.8" y="766.7" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(173.79 431.8 766.7)">o</text>
+<text x="427.0" y="723.0" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(173.79 427.0 723.0)">14</text>
+<line x1="408.0" y1="708.0" x2="408.0" y2="806.0" stroke="#000" stroke-width="0.8"/>
+<text x="384.2" y="766.7" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(186.21 384.2 766.7)">p</text>
+<text x="389.0" y="723.0" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(186.21 389.0 723.0)">15</text>
+<line x1="373.6" y1="704.3" x2="352.5" y2="800.0" stroke="#000" stroke-width="0.8"/>
+<text x="337.8" y="756.5" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(198.62 337.8 756.5)">q</text>
+<text x="351.8" y="714.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(198.62 351.8 714.8)">16</text>
+<line x1="340.8" y1="693.2" x2="299.7" y2="782.2" stroke="#000" stroke-width="0.8"/>
+<text x="294.6" y="736.5" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(211.03 294.6 736.5)">r</text>
+<text x="317.3" y="698.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(211.03 317.3 698.8)">17</text>
+<line x1="311.2" y1="675.4" x2="251.9" y2="753.4" stroke="#000" stroke-width="0.8"/>
+<text x="256.7" y="707.7" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(223.45 256.7 707.7)">s</text>
+<text x="287.0" y="675.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(223.45 287.0 675.8)">18</text>
+<line x1="286.1" y1="651.6" x2="211.4" y2="715.0" stroke="#000" stroke-width="0.8"/>
+<text x="225.9" y="671.5" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(235.86 225.9 671.5)">t</text>
+<text x="262.3" y="646.8" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(235.86 262.3 646.8)">19</text>
+<line x1="266.6" y1="622.9" x2="180.1" y2="668.8" stroke="#000" stroke-width="0.8"/>
+<text x="203.6" y="629.4" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(248.28 203.6 629.4)">u</text>
+<text x="244.5" y="613.1" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(248.28 244.5 613.1)">20</text>
+<line x1="253.8" y1="590.8" x2="159.4" y2="617.0" stroke="#000" stroke-width="0.8"/>
+<text x="190.9" y="583.6" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(260.69 190.9 583.6)">v</text>
+<text x="234.3" y="576.5" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(260.69 234.3 576.5)">21</text>
+<line x1="248.2" y1="556.7" x2="150.4" y2="562.0" stroke="#000" stroke-width="0.8"/>
+<text x="188.3" y="536.1" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(273.10 188.3 536.1)">w</text>
+<text x="232.3" y="538.5" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(273.10 232.3 538.5)">22</text>
+<line x1="250.1" y1="522.1" x2="153.4" y2="506.3" stroke="#000" stroke-width="0.8"/>
+<text x="196.0" y="489.1" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(285.52 196.0 489.1)">x</text>
+<text x="238.4" y="500.9" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(285.52 238.4 500.9)">23</text>
+<line x1="259.4" y1="488.8" x2="168.3" y2="452.5" stroke="#000" stroke-width="0.8"/>
+<text x="213.6" y="445.0" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(297.93 213.6 445.0)">y</text>
+<text x="252.5" y="465.6" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(297.93 252.5 465.6)">24</text>
+<line x1="275.6" y1="458.2" x2="194.5" y2="403.2" stroke="#000" stroke-width="0.8"/>
+<text x="240.3" y="405.6" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(310.34 240.3 405.6)">z</text>
+<text x="273.9" y="434.1" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(310.34 273.9 434.1)">25</text>
+<line x1="298.0" y1="431.8" x2="230.6" y2="360.7" stroke="#000" stroke-width="0.8"/>
+<text x="274.9" y="372.9" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(322.76 274.9 372.9)">_</text>
+<text x="301.5" y="407.9" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(322.76 301.5 407.9)">26</text>
+<line x1="325.5" y1="410.9" x2="275.0" y2="326.9" stroke="#000" stroke-width="0.8"/>
+<text x="315.6" y="348.3" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(335.17 315.6 348.3)">,</text>
+<text x="334.1" y="388.3" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(335.17 334.1 388.3)">27</text>
+<line x1="356.9" y1="396.4" x2="325.6" y2="303.5" stroke="#000" stroke-width="0.8"/>
+<text x="360.7" y="333.1" text-anchor="middle" dominant-baseline="central" class="L" transform="rotate(347.59 360.7 333.1)">.</text>
+<text x="370.2" y="376.1" text-anchor="middle" dominant-baseline="central" class="n" transform="rotate(347.59 370.2 376.1)">28</text>
+<circle cx="408.0" cy="548.0" r="4" fill="#fff" stroke="#000"/>
+</svg>

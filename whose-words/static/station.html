@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>wheel station · prototype 0.3</title>
+<!-- The iPad station: a vellum inner disk (print from /wheel/vellum) is taped over this screen, which draws the
+     outer ring. Turning the ring sets the key. Run it full screen on the iPad as an extended display. -->
+<style>
+:root{--bg:#FFFFFF;--ink:#000000;--soft:#5A5A5A;--faint:#8A8A8A;--hair:#D6D6D6;--glow:#FFE36E;--red:#E0242B;
+  --sans:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;user-select:none}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--faint)}
+#wheel{position:fixed;inset:0;width:100%;height:100%;touch-action:none}
+#wheel .ringtext{font-family:var(--mono);font-weight:700;fill:var(--ink)}
+#wheel .ringtext.lit{fill:var(--red)}
+#ring{transition:transform .18s ease-out}
+#ring.dragging{transition:none}
+.hit{fill:transparent;cursor:grab}
+.hit:active{cursor:grabbing}
+
+/* the card: the reply as Babel noise, next to the wheel */
+.panel{position:fixed;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.q{font-size:14px;color:var(--soft);margin:0}
+.cipher{font-family:var(--mono);font-size:22px;line-height:1.9;letter-spacing:.06em;word-break:break-all;margin:0;overflow-y:auto;min-height:0}
+.cipher .wd{cursor:pointer;padding:1px 0;border-bottom:2px solid transparent}
+.cipher .wd:hover{border-bottom-color:var(--hair)}
+.cipher .wd.on{background:color-mix(in srgb, var(--glow) 70%, transparent);border-bottom-color:var(--ink)}
+.cipher .sp{color:inherit}
+.reading{min-height:96px;border-left:2px solid var(--ink);padding:4px 0 4px 12px;font-size:15px;color:var(--soft)}
+.reading b{color:var(--ink);font-weight:600}
+.reading .big{display:block;font-family:var(--mono);font-size:26px;color:var(--ink);letter-spacing:.04em;margin:2px 0 4px}
+.sw{display:inline-block;width:14px;height:4px;background:var(--c);vertical-align:middle;margin-right:6px;outline:1px solid var(--ink)}
+.ask{display:flex;border:1px solid var(--ink)}
+.ask input{flex:1;border:0;padding:9px 11px;outline:none;background:none;user-select:text}
+.ask button{border:0;border-left:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:0 14px;cursor:pointer}
+.ask button:disabled{background:none;color:var(--faint)}
+.tools{display:flex;gap:16px;flex-wrap:wrap}
+.tools button,.tools a{background:none;border:0;padding:0;color:var(--faint);text-decoration:underline;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+.err{color:var(--ink);font-weight:600;font-size:13px;margin:0}
+.err:empty{display:none}
+
+/* calibration */
+.cal{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:5;padding:20px;text-align:center}
+.cal[hidden]{display:none}
+.cal h1{font-size:20px;margin:0}
+.cal p{margin:0;max-width:52ch;color:var(--soft)}
+.cardbox{border:2px solid var(--ink);border-radius:3.2mm;position:relative}
+.cardbox::after{content:"bank card · 85.6 × 54 mm";position:absolute;left:8px;bottom:6px;font:11px var(--mono);color:var(--faint)}
+.cal input[type=range]{width:min(520px,90vw)}
+.cal button{border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:8px 16px;cursor:pointer}
+</style>
+</head>
+<body>
+<svg id="wheel" aria-label="Cipher wheel: the outer ring turns, the vellum inner disk sits on top"></svg>
+
+<section class="panel" id="panel">
+  <p class="q" id="q">Ask something, then decode the reply with the wheel.</p>
+  <p class="cipher" id="cipher" aria-live="polite"></p>
+  <div class="reading" id="reading">Turn the ring (drag it, or use ← →) until the card reads as language. Click a word on the card to light its letters on the wheel.</div>
+  <form class="ask" id="ask"><input id="askIn" maxlength="1000" placeholder="Ask something…" autocomplete="off" aria-label="Question"><button id="askBtn" type="submit">Ask</button></form>
+  <p class="err" id="err" role="alert"></p>
+  <div class="tools"><button type="button" id="calBtn">calibrate</button><a id="vellumLink" href="/wheel/vellum" target="_blank">print the vellum disk</a></div>
+</section>
+
+<div class="cal" id="cal" hidden>
+  <h1>Match the screen to a real card</h1>
+  <p>Hold a bank card (any standard card, 85.6 mm wide) against the screen and drag the slider until the outline is exactly the card's size. The wheel is then drawn at true size under the vellum disk.</p>
+  <div class="cardbox" id="cardbox"></div>
+  <input type="range" id="calRange" min="2" max="9" step="0.01" aria-label="Pixels per millimetre">
+  <button type="button" id="calDone">Done</button>
+</div>
+
+<script>
+// ---------- Babel's alphabet and the shift, as in physical/cipher_wheel.py (keep the two in step) ----------
+const A = "abcdefghijklmnopqrstuvwxyz ,.", N = A.length, STEP = 360 / N;
+const SHOW = c => c === " " ? "_" : c;
+const ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(" ");
+const TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split(" ");
+function numberWords(s){
+  const n = Number(s);
+  if (s.length > 6 || n >= 1000000) return [...s].map(d => ONES[+d]).join(" ");
+  if (n < 20) return ONES[n];
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? " " + ONES[n % 10] : "");
+  if (n < 1000) return ONES[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + numberWords(String(n % 100)) : "");
+  return numberWords(String(Math.floor(n / 1000))) + " thousand" + (n % 1000 ? " " + numberWords(String(n % 1000)) : "");
+}
+function babelize(text){
+  let t = text.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase();
+  t = t.replace(/(?<=\d),(?=\d{3}\b)/g, "");
+  t = t.replace(/(\d)\.(\d)/g, "$1 point $2");
+  t = t.replace(/\d+/g, m => " " + numberWords(m) + " ");
+  t = t.replace(/[?!…]/g, ".").replace(/[:;]/g, ",").replace(/[\s\-–—/]+/g, " ");
+  t = [...t].filter(c => A.includes(c)).join("");
+  t = t.replace(/ +/g, " ").replace(/ ([,.])/g, "$1").replace(/([,.])[,.]+/g, "$1");
+  return t.trim();
+}
+const encode = (p, k) => [...p].map(c => A[((A.indexOf(c) + k) % N + N) % N]).join("");
+const decode = (c, k) => encode(c, -k);
+function align(tokens){
+  // Which reply word each character of the babelized reply came from (by babelizing longer and longer prefixes).
+  const plain = babelize(tokens.join("")), owner = [];
+  let acc = "";
+  tokens.forEach((t, i) => { acc += t; const n = Math.min(babelize(acc).length, plain.length); while (owner.length < n) owner.push(i) });
+  while (owner.length < plain.length) owner.push(Math.max(0, tokens.length - 1));
+  return {plain, owner};
+}
+const MAX_CHARS = 1000;
+
+// ---------- geometry: millimetres, shared with the printed vellum disk ----------
+const params = new URLSearchParams(location.search);
+const DISK_D = Math.min(180, Math.max(50, +params.get("d") || 90));
+const R = DISK_D / 2;
+const G = {disk_r: R, letter_r: R * 0.84, ring_in: R * 1.05, ring_text: R * 1.22, ring_out: R * 1.40};
+document.getElementById("vellumLink").href = `/wheel/vellum?d=${DISK_D}`;
+
+const store = {get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } }, set(k, v){ try{ localStorage.setItem(k, v) }catch(e){} }};
+let pxmm = +store.get("station-pxmm") || 0;      // screen pixels per real millimetre, from calibration
+let rot = 0;                                      // the ring's turn, in degrees (whole steps once it settles)
+let card = null, sel = null;                      // the reply on the card; the selected word
+const $ = id => document.getElementById(id);
+const svgNS = "http://www.w3.org/2000/svg";
+const keyNow = () => ((Math.round(rot / STEP) % N) + N) % N;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let cx = 0, cy = 0;
+function at(r, deg){ const a = (deg - 90) * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)] }
+
+function layout(){
+  // Wheel on the left in landscape, on top in portrait; the card fills the rest.
+  const W = innerWidth, H = innerHeight, ro = G.ring_out * pxmm, pad = 24;
+  const panel = $("panel"), land = W >= H;
+  if (land){ cx = pad + ro + 12; cy = H / 2; Object.assign(panel.style, {left: (cx + ro + 36) + "px", top: pad + "px", right: pad + "px", bottom: pad + "px", width: "", height: ""}) }
+  else { cx = W / 2; cy = pad + ro + 12; Object.assign(panel.style, {left: pad + "px", right: pad + "px", top: (cy + ro + 28) + "px", bottom: pad + "px", width: "", height: ""}) }
+  drawWheel();
+}
+
+function drawWheel(){
+  const svg = $("wheel"), k = pxmm, lit = litLetters();
+  const ri = G.ring_in * k, ro = G.ring_out * k, rt = G.ring_text * k, rd = G.disk_r * k, rl = G.letter_r * k;
+  let s = "";
+  // under the vellum: a glow behind the inner letters of the selected word (the screen shines through the disk)
+  lit.forEach(i => { const [x, y] = at(rl, i * STEP); s += `<circle cx="${x}" cy="${y}" r="${rd * 0.12}" fill="var(--glow)"/>` });
+  // where the disk goes: its edge, its centre, and the tick its red mark lines up with
+  s += `<circle cx="${cx}" cy="${cy}" r="${rd}" fill="none" stroke="var(--hair)" stroke-dasharray="4 4"/>`;
+  s += `<path d="M${cx - 10},${cy} H${cx + 10} M${cx},${cy - 10} V${cy + 10}" stroke="var(--hair)"/>`;
+  const [tx0, ty0] = at(rd, 0), [tx1, ty1] = at(ri, 0);
+  s += `<line x1="${tx0}" y1="${ty0 - 2}" x2="${tx1}" y2="${ty1}" stroke="var(--red)" stroke-width="3"/>`;
+  // the outer ring, which turns
+  let ring = `<circle cx="${cx}" cy="${cy}" r="${(ri + ro) / 2}" fill="none" stroke="#F4F4F4" stroke-width="${ro - ri}"/>`
+    + `<circle cx="${cx}" cy="${cy}" r="${ri}" fill="none" stroke="var(--ink)"/><circle cx="${cx}" cy="${cy}" r="${ro}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
+  [...A].forEach((ch, j) => {
+    const [x0, y0] = at(ri, j * STEP - STEP / 2), [x1, y1] = at(ro, j * STEP - STEP / 2), [x, y] = at(rt, j * STEP);
+    ring += `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="var(--ink)" stroke-width=".8"/>`
+      + `<text class="ringtext${lit.has(((j + keyNow()) % N)) ? " lit" : ""}" x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="${G.disk_r * 0.17 * k}" transform="rotate(${j * STEP} ${x} ${y})">${esc(SHOW(ch))}</text>`;
+  });
+  s += `<g id="ring" style="transform-origin:${cx}px ${cy}px;transform:rotate(${rot}deg)">${ring}</g>`;
+  // where you grab the ring: the band itself, plus a little outside it
+  s += `<path class="hit" id="hit" fill-rule="evenodd" d="M${cx - ro - 30},${cy} a${ro + 30},${ro + 30} 0 1,0 ${2 * (ro + 30)},0 a${ro + 30},${ro + 30} 0 1,0 ${-2 * (ro + 30)},0 Z M${cx - ri},${cy} a${ri},${ri} 0 1,1 ${2 * ri},0 a${ri},${ri} 0 1,1 ${-2 * ri},0 Z"/>`;
+  svg.innerHTML = s;
+  wireRing();
+}
+
+// The outer letters to light: under the current key, the ones beside the selected word's inner letters.
+function litLetters(){
+  const set = new Set();
+  if (!sel || !card) return set;
+  for (let i = sel.s; i < sel.e; i++) set.add(A.indexOf(card.cipher[i]));
+  return set;
+}
+
+// ---------- turning the ring ----------
+function wireRing(){
+  const hit = $("hit"), ring = $("ring");
+  let start = null;
+  const angle = e => Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI;
+  hit.onpointerdown = e => { start = {a: angle(e), rot}; hit.setPointerCapture(e.pointerId); ring.classList.add("dragging") };
+  hit.onpointermove = e => {
+    if (!start) return;
+    let d = angle(e) - start.a; d = ((d + 540) % 360) - 180;
+    rot = start.rot + d; ring.style.transform = `rotate(${rot}deg)`;
+  };
+  hit.onpointerup = hit.onpointercancel = () => { if (!start) return; start = null; ring.classList.remove("dragging"); settle() };
+}
+function settle(){ rot = Math.round(rot / STEP) * STEP; drawWheel(); read() }
+addEventListener("keydown", e => {
+  if (document.activeElement === $("askIn")) return;
+  if (e.key === "ArrowRight" || e.key === "ArrowDown"){ e.preventDefault(); rot += STEP; settle() }
+  else if (e.key === "ArrowLeft" || e.key === "ArrowUp"){ e.preventDefault(); rot -= STEP; settle() }
+  else if (e.key === "Escape"){ sel = null; showCard(); drawWheel(); read() }
+});
+
+// ---------- the card ----------
+const INKS = ["#6EC6FF","#FF8FC7","#7EE0A1","#FFD166","#B39DFF","#FFA06B","#5FD3D0","#FF7A85"], inks = {};
+const ink = u => inks[u] = inks[u] || INKS[Object.keys(inks).length % INKS.length];
+fetch("/api/state").then(r => r.json()).then(s => s.entries.forEach(e => ink(e.user_id))).catch(() => {});
+
+function showCard(){
+  const box = $("cipher");
+  if (!card){ box.textContent = ""; return }
+  // The card shows exactly the ciphertext, every character, spaces drawn as "_". Click targets follow the reply's
+  // real words, but invisibly: the character that hides a space is shown like any other, so nothing gives words away.
+  const shown = s => esc([...s].map(SHOW).join(""));
+  let h = "", i = 0;
+  while (i < card.plain.length){
+    if (card.plain[i] === " "){ h += `<span class="sp">${shown(card.cipher[i])}</span>`; i++; continue }
+    let j = i; while (j < card.plain.length && card.plain[j] !== " ") j++;
+    h += `<span class="wd${sel && sel.s === i ? " on" : ""}" data-s="${i}" data-e="${j}">${shown(card.cipher.slice(i, j))}</span>`;
+    i = j;
+  }
+  box.innerHTML = h;
+  box.querySelectorAll(".wd").forEach(w => w.onclick = () => {
+    sel = sel && sel.s === +w.dataset.s ? null : {s: +w.dataset.s, e: +w.dataset.e};
+    showCard(); drawWheel(); read();
+  });
+}
+
+function whose(s, e){
+  // Who shaped the reply word(s) this card word came from: the strongest people's share, and any path turn.
+  const steps = [...new Set(card.owner.slice(s, e))].map(i => card.steps[i]);
+  let best = null, turn = null;
+  steps.forEach(st => {
+    const people = Object.entries(st.shares).filter(([u]) => u !== "parametric").sort((a, b) => b[1] - a[1]);
+    const share = people.reduce((t, [, v]) => t + v, 0);
+    if (people.length && (!best || share > best.share)) best = {people, share};
+    if (people.length && st.alone != null && !turn) turn = {alone: st.alone, by: people[0][0]};
+  });
+  if (!best || best.share < 0.05) return "The model's own words.";
+  const names = best.people.slice(0, 2).map(([u, v]) => `<span class="sw" style="--c:${ink(u)}"></span>${esc(u)} ${Math.round(v * 100)}%`).join(" · ");
+  return `${best.share > 0.5 ? "Mostly other people's words" : "The model's words, nudged by people"}: ${names}.`
+    + (turn ? ` <b>The path turned here:</b> the model alone would have said “${esc(turn.alone.trim())}”.` : "");
+}
+
+function read(){
+  // What the selected word reads as with the ring where it is now. Only the right setting reads as language;
+  // nothing on the wheel says which setting that is.
+  const box = $("reading");
+  if (!card){ return }
+  if (!sel){ box.innerHTML = "Turn the ring (drag it, or use ← →) until the card reads as language. Click a word on the card to light its letters on the wheel."; return }
+  const word = decode(card.cipher.slice(sel.s, sel.e), keyNow());
+  box.innerHTML = `<span class="mono">with the ring where it is, this word reads</span><span class="big">${esc(word)}</span>`
+    + (keyNow() === card.key ? whose(sel.s, sel.e) : `<span class="mono">look for its lit letters on the ring</span>`);
+}
+
+$("ask").onsubmit = async e => {
+  e.preventDefault();
+  const q = $("askIn").value.trim(); if (!q) return;
+  $("askBtn").disabled = true; $("err").textContent = ""; $("q").textContent = "writing…";
+  try{
+    const r = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({user_id: "station", question: q, log: false})});
+    const a = await r.json(); if (!r.ok) throw new Error(a.detail || "The server returned an error.");
+    let {plain, owner} = align(a.memory.steps.map(s => s.text));
+    if (plain.length > MAX_CHARS){ const cut = plain.lastIndexOf(" ", MAX_CHARS); plain = plain.slice(0, cut > 0 ? cut : MAX_CHARS); owner = owner.slice(0, plain.length) }
+    const key = 1 + Math.floor(Math.random() * (N - 1));
+    card = {plain, owner, key, cipher: encode(plain, key), steps: a.memory.steps.map(s => ({shares: s.shares, alone: s.lm_top5[0].id !== s.token_id ? s.lm_top5[0].text : null}))};
+    sel = null; $("q").textContent = `Asked: “${q}”`; $("askIn").value = "";
+    showCard(); drawWheel(); read();
+  }catch(err){ $("err").textContent = err.message; $("q").textContent = "Ask something, then decode the reply with the wheel." }
+  $("askBtn").disabled = false;
+};
+
+// ---------- calibration ----------
+function calibrate(){
+  $("cal").hidden = false;
+  const r = $("calRange"); r.value = pxmm || (96 / 25.4);
+  const size = () => { $("cardbox").style.width = (85.6 * r.value) + "px"; $("cardbox").style.height = (54 * r.value) + "px" };
+  r.oninput = size; size();
+  $("calDone").onclick = () => { pxmm = +r.value; store.set("station-pxmm", pxmm); $("cal").hidden = true; layout() };
+}
+$("calBtn").onclick = calibrate;
+addEventListener("resize", () => { if (pxmm) layout() });
+if (pxmm) layout(); else calibrate();
+</script>
+</body>
+</html>

@@ -1,0 +1,1223 @@
+[
+ {
+  "t": 1793680594.1855412,
+  "output": "## Page Feedback: /?feedback\n**App:** whose-words\n**Viewport:** 1512×752\n\n### 1. paragraph: \"reply · 001 · asked by testing\"\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > .eyebrow\n**Feedback:** remove this section entirely\n\n### 2. controls\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > .controls[data-component=\"view-controls\"]\n**Feedback:** these controls can be hidden completely, give the top section a caret to hide this\n\n### 3. text\n**Location:** #canvas[data-component=\"corridor\"] > svg > g[data-component=\"fare-meter\"] > text\n**Feedback:** this text is intersecting the graph too much\n\n### 4. button \"your prompt cost 36.6 bit\"\n**Location:** #stageInner > div > #stagePrice > .price\n**Feedback:** the cost/bought should be visualized in a more visually clear and obvious manner.\n\n### 5. legend\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > #legend[data-component=\"legend\"]\n**Feedback:** the legend should go underneath the response text",
+  "annotations": [
+   {
+    "id": "1793680465156",
+    "x": 42.06349206349206,
+    "y": 20,
+    "comment": "remove this section entirely",
+    "element": "paragraph: \"reply · 001 · asked by testing\"",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > .eyebrow",
+    "timestamp": 1793680469991,
+    "boundingBox": {
+     "x": 324,
+     "y": 20,
+     "width": 789,
+     "height": 16.5
+    },
+    "nearbyText": "reply · 001 · asked by testing [after: \"what is infinity\"]",
+    "cssClasses": "eyebrow",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > p.eyebrow",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.66px; text-align: start; width: 789px; height: 16.5px; margin: 0px 0px 6px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h2, div, div.controls, p.reading (9 total in .stage-inner)",
+    "attributes": {}
+   },
+   {
+    "id": "1793680473902",
+    "x": 64.0873015873016,
+    "y": 136,
+    "comment": "these controls can be hidden completely, give the top section a caret to hide this",
+    "element": "controls",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > .controls[data-component=\"view-controls\"]",
+    "timestamp": 1793680496442,
+    "boundingBox": {
+     "x": 324,
+     "y": 113,
+     "width": 789,
+     "height": 52.5
+    },
+    "nearbyText": "memoryweightslibrary\n       people\n       fare meter\n       open the walls (Babel) [after: \"Infinity? The concept of?\"]",
+    "cssClasses": "controls",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div.controls",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 15px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 22.5px; text-align: start; width: 789px; height: 52.5px; padding: 10px 0px; margin: 16px 0px 14px; display: flex; flex-direction: row; align-items: center; gap: 10px 18px; opacity: 1",
+    "nearbyElements": "p.eyebrow, h2, div, p.reading (9 total in .stage-inner)",
+    "attributes": {
+     "data-component": "view-controls"
+    }
+   },
+   {
+    "id": "1793680511903",
+    "x": 64.15343915343915,
+    "y": 555,
+    "comment": "this text is intersecting the graph too much",
+    "element": "text",
+    "elementPath": "#canvas[data-component=\"corridor\"] > svg > g[data-component=\"fare-meter\"] > text",
+    "timestamp": 1793680520285,
+    "boundingBox": {
+     "x": 750.7666015625,
+     "y": 544.75,
+     "width": 263.2421875,
+     "height": 12
+    },
+    "nearbyText": "Babel: 126 bits by the end, off the chart",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div#canvas > svg > g > text",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 10px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; letter-spacing: 0.4px; text-align: start; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793680523840",
+    "x": 44.77513227513227,
+    "y": 93,
+    "comment": "the cost/bought should be visualized in a more visually clear and obvious manner.",
+    "element": "button \"your prompt cost 36.6 bit\"",
+    "elementPath": "#stageInner > div > #stagePrice > .price",
+    "timestamp": 1793680545872,
+    "boundingBox": {
+     "x": 324,
+     "y": 79.5,
+     "width": 383.1875,
+     "height": 16.5
+    },
+    "nearbyText": "your prompt cost 36.6 bits to reach · 54.0 bits in Babel",
+    "cssClasses": "price",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div > span#stagePrice > button.price",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.22px; text-align: left; width: 383.188px; height: 16.5px; border: 0px none rgb(0, 0, 0); display: inline-block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793680558897",
+    "x": 57.473544973544975,
+    "y": 598,
+    "comment": "the legend should go underneath the response text",
+    "element": "legend",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > #legend[data-component=\"legend\"]",
+    "timestamp": 1793680569010,
+    "boundingBox": {
+     "x": 324,
+     "y": 565.25,
+     "width": 789,
+     "height": 41.5
+    },
+    "nearbyText": "",
+    "cssClasses": "legend",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div#legend",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 12.5px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 18.75px; text-align: start; width: 789px; height: 41.5px; margin: 8px 0px 0px; border: 0px none rgb(0, 0, 0); display: flex; flex-direction: row; gap: 4px 16px; opacity: 1",
+    "nearbyElements": "p.eyebrow, h2, div, div.controls (9 total in .stage-inner)",
+    "attributes": {
+     "data-component": "legend"
+    }
+   }
+  ]
+ },
+ {
+  "t": 1793684422.1217852,
+  "output": "## Page Feedback: /sketch?feedback\n**App:** whose-words sketch\n**Viewport:** 1512×752\n\n### 1. doors show\n**Location:** #log > section > .reply > .doors\n**Feedback:** the doors show element doesn't really make sense to me, what is it trying to show? if it's not important, it shouldn't show up.\n\n### 2. paragraph: \"Barnaby was a scruffy terrier mix, a bit...\"\n**Location:** #log > section > .reply > .text\n**Feedback:** the lines above and underneath the lines of words should align together evenly\n\n### 3. ask\n**Location:** #main > #log > section > .ask\n**Feedback:** make the ask section align right properly\n\n### 4. paragraph: \"Each reply is one path through every tex...\"\n**Location:** header > .top > p\n**Feedback:** get rid of this\n\n### 5. button \"hear the crowd\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** replace \"hear the crowd\" with \"see fully user-trained response:\"\n\n### 6. button \"hide the crowd\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** remove this button\n\n### 7. button \"asked51.0 bits\n      boug\"\n**Location:** section > .reply > .foot > .fare\n**Feedback:** rephrase the \"asked\" \"bought\" to be more coherent",
+  "annotations": [
+   {
+    "id": "1793684206675",
+    "x": 68.98148148148148,
+    "y": 385,
+    "comment": "the doors show element doesn't really make sense to me, what is it trying to show? if it's not important, it shouldn't show up.",
+    "element": "doors show",
+    "elementPath": "#log > section > .reply > .doors",
+    "timestamp": 1793684224284,
+    "boundingBox": {
+     "x": 938.5,
+     "y": 339.65625,
+     "width": 120,
+     "height": 124.5
+    },
+    "nearbyText": "other doorschaotic20%tapestry14%symphony8%",
+    "cssClasses": "doors, show",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.doors",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: start; width: 120px; height: 124.5px; padding: 8px 10px; border: 1px solid rgb(0, 0, 0); display: flex; position: absolute; top: 182.438px; right: 50px; bottom: 149.234px; left: 550px; z-index: 3; flex-direction: column; gap: 4px; opacity: 1",
+    "nearbyElements": "p.text, div.card, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793684227545",
+    "x": 27.18253968253968,
+    "y": 164,
+    "comment": "the lines above and underneath the lines of words should align together evenly",
+    "element": "paragraph: \"Barnaby was a scruffy terrier mix, a bit...\"",
+    "elementPath": "#log > section > .reply > .text",
+    "timestamp": 1793684239667,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 157.21875,
+     "width": 720,
+     "height": 239.375
+    },
+    "nearbyText": "[after: \"other doorsIn2%Pat1%The1%\"]",
+    "cssClasses": "text",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > p.text",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 21px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 59.85px; text-align: start; width: 720px; height: 239.375px; padding: 0px 2px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "div.doors, div.card, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793684245862",
+    "x": 63.69047619047619,
+    "y": 111,
+    "comment": "make the ask section align right properly",
+    "element": "ask",
+    "elementPath": "#main > #log > section > .ask",
+    "timestamp": 1793684252668,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 87.71875,
+     "width": 576,
+     "height": 69.5
+    },
+    "nearbyText": "kellyTell me a story about a dog.",
+    "cssClasses": "ask",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.ask",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: right; width: 576px; height: 69.5px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "div.reply",
+    "attributes": {}
+   },
+   {
+    "id": "1793684259959",
+    "x": 47.08994708994709,
+    "y": 49,
+    "comment": "get rid of this",
+    "element": "paragraph: \"Each reply is one path through every tex...\"",
+    "elementPath": "header > .top > p",
+    "timestamp": 1793684262315,
+    "boundingBox": {
+     "x": 503.1484375,
+     "y": 12,
+     "width": 490.4296875,
+     "height": 58.5
+    },
+    "nearbyText": "[before: \"Whose words?\"] [after: \"open the walls\"]",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > header > div.top > p",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: start; width: 490.43px; height: 58.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h1, button.walls-btn \"open the walls\"",
+    "attributes": {}
+   },
+   {
+    "id": "1793684272606",
+    "x": 30.555555555555557,
+    "y": 410,
+    "comment": "replace \"hear the crowd\" with \"see fully user-trained response:\"",
+    "element": "button \"hear the crowd\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793684295445,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 404.71875,
+     "width": 90.5078125,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"shaped by dogisakellyisabelzhaniyaanon\"] hear the crowd",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 90.5078px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"asked41.0 bits\n\", span.lev, span.people",
+    "attributes": {}
+   },
+   {
+    "id": "1793684303969",
+    "x": 70.63492063492063,
+    "y": 521,
+    "comment": "remove this button",
+    "element": "button \"hide the crowd\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793684306532,
+    "boundingBox": {
+     "x": 1018.71875,
+     "y": 512.34375,
+     "width": 89.578125,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"shaped by dogJoeBinnaEmma\"] hide the crowd",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 89.5781px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"asked51.0 bits\n\", span.lev, span.people",
+    "attributes": {}
+   },
+   {
+    "id": "1793684318504",
+    "x": 34.06084656084656,
+    "y": 528,
+    "comment": "rephrase the \"asked\" \"bought\" to be more coherent",
+    "element": "button \"asked51.0 bits\n      boug\"",
+    "elementPath": "section > .reply > .foot > .fare",
+    "timestamp": 1793684327405,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 500.59375,
+     "width": 232.078125,
+     "height": 43
+    },
+    "nearbyText": "asked51.0 bits\n      bought80.5 bits [after: \"1.6×\"]",
+    "cssClasses": "fare",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.fare",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: left; width: 232.078px; height: 43px; border: 0px none rgb(90, 90, 90); display: grid; flex-direction: row; align-items: center; gap: 4px 8px; opacity: 1",
+    "nearbyElements": "span.lev, span.people, button.linkish \"hide the crowd\"",
+    "attributes": {}
+   }
+  ]
+ },
+ {
+  "t": 1793684810.3288739,
+  "output": "## Page Feedback: /sketch?feedback\n**App:** whose-words sketch\n**Viewport:** 1512×752\n\n### 1. doors show\n**Location:** #log > section > .reply > .doors\n**Feedback:** the doors show element doesn't really make sense to me, what is it trying to show? if it's not important, it shouldn't show up.\n\n### 2. paragraph: \"Barnaby was a scruffy terrier mix, a bit...\"\n**Location:** #log > section > .reply > .text\n**Feedback:** the lines above and underneath the lines of words should align together evenly\n\n### 3. ask\n**Location:** #main > #log > section > .ask\n**Feedback:** make the ask section align right properly\n\n### 4. paragraph: \"Each reply is one path through every tex...\"\n**Location:** header > .top > p\n**Feedback:** get rid of this\n\n### 5. button \"hear the crowd\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** replace \"hear the crowd\" with \"see fully user-trained response:\"\n\n### 6. button \"hide the crowd\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** remove this button\n\n### 7. button \"asked51.0 bits\n      boug\"\n**Location:** section > .reply > .foot > .fare\n**Feedback:** rephrase the \"asked\" \"bought\" to be more coherent\n\n### 8. card\n**Location:** #log > section > .reply > .card\n**Feedback:** the contents here should show up on-hover in a card above the hovered word.",
+  "annotations": [
+   {
+    "id": "1793684206675",
+    "x": 68.98148148148148,
+    "y": 385,
+    "comment": "the doors show element doesn't really make sense to me, what is it trying to show? if it's not important, it shouldn't show up.",
+    "element": "doors show",
+    "elementPath": "#log > section > .reply > .doors",
+    "timestamp": 1793684224284,
+    "boundingBox": {
+     "x": 938.5,
+     "y": 339.65625,
+     "width": 120,
+     "height": 124.5
+    },
+    "nearbyText": "other doorschaotic20%tapestry14%symphony8%",
+    "cssClasses": "doors, show",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.doors",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: start; width: 120px; height: 124.5px; padding: 8px 10px; border: 1px solid rgb(0, 0, 0); display: flex; position: absolute; top: 182.438px; right: 50px; bottom: 149.234px; left: 550px; z-index: 3; flex-direction: column; gap: 4px; opacity: 1",
+    "nearbyElements": "p.text, div.card, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793684227545",
+    "x": 27.18253968253968,
+    "y": 164,
+    "comment": "the lines above and underneath the lines of words should align together evenly",
+    "element": "paragraph: \"Barnaby was a scruffy terrier mix, a bit...\"",
+    "elementPath": "#log > section > .reply > .text",
+    "timestamp": 1793684239667,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 157.21875,
+     "width": 720,
+     "height": 239.375
+    },
+    "nearbyText": "[after: \"other doorsIn2%Pat1%The1%\"]",
+    "cssClasses": "text",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > p.text",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 21px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 59.85px; text-align: start; width: 720px; height: 239.375px; padding: 0px 2px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "div.doors, div.card, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793684245862",
+    "x": 63.69047619047619,
+    "y": 111,
+    "comment": "make the ask section align right properly",
+    "element": "ask",
+    "elementPath": "#main > #log > section > .ask",
+    "timestamp": 1793684252668,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 87.71875,
+     "width": 576,
+     "height": 69.5
+    },
+    "nearbyText": "kellyTell me a story about a dog.",
+    "cssClasses": "ask",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.ask",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: right; width: 576px; height: 69.5px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "div.reply",
+    "attributes": {}
+   },
+   {
+    "id": "1793684259959",
+    "x": 47.08994708994709,
+    "y": 49,
+    "comment": "get rid of this",
+    "element": "paragraph: \"Each reply is one path through every tex...\"",
+    "elementPath": "header > .top > p",
+    "timestamp": 1793684262315,
+    "boundingBox": {
+     "x": 503.1484375,
+     "y": 12,
+     "width": 490.4296875,
+     "height": 58.5
+    },
+    "nearbyText": "[before: \"Whose words?\"] [after: \"open the walls\"]",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > header > div.top > p",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: start; width: 490.43px; height: 58.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h1, button.walls-btn \"open the walls\"",
+    "attributes": {}
+   },
+   {
+    "id": "1793684272606",
+    "x": 30.555555555555557,
+    "y": 410,
+    "comment": "replace \"hear the crowd\" with \"see fully user-trained response:\"",
+    "element": "button \"hear the crowd\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793684295445,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 404.71875,
+     "width": 90.5078125,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"shaped by dogisakellyisabelzhaniyaanon\"] hear the crowd",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 90.5078px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"asked41.0 bits\n\", span.lev, span.people",
+    "attributes": {}
+   },
+   {
+    "id": "1793684303969",
+    "x": 70.63492063492063,
+    "y": 521,
+    "comment": "remove this button",
+    "element": "button \"hide the crowd\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793684306532,
+    "boundingBox": {
+     "x": 1018.71875,
+     "y": 512.34375,
+     "width": 89.578125,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"shaped by dogJoeBinnaEmma\"] hide the crowd",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 89.5781px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"asked51.0 bits\n\", span.lev, span.people",
+    "attributes": {}
+   },
+   {
+    "id": "1793684318504",
+    "x": 34.06084656084656,
+    "y": 528,
+    "comment": "rephrase the \"asked\" \"bought\" to be more coherent",
+    "element": "button \"asked51.0 bits\n      boug\"",
+    "elementPath": "section > .reply > .foot > .fare",
+    "timestamp": 1793684327405,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 500.59375,
+     "width": 232.078125,
+     "height": 43
+    },
+    "nearbyText": "asked51.0 bits\n      bought80.5 bits [after: \"1.6×\"]",
+    "cssClasses": "fare",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.fare",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: left; width: 232.078px; height: 43px; border: 0px none rgb(90, 90, 90); display: grid; flex-direction: row; align-items: center; gap: 4px 8px; opacity: 1",
+    "nearbyElements": "span.lev, span.people, button.linkish \"hide the crowd\"",
+    "attributes": {}
+   },
+   {
+    "id": "1793684772465",
+    "x": 54.232804232804234,
+    "y": 481,
+    "comment": "the contents here should show up on-hover in a card above the hovered word.",
+    "element": "card",
+    "elementPath": "#log > section > .reply > .card",
+    "timestamp": 1793684781604,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 443.09375,
+     "width": 720,
+     "height": 46
+    },
+    "nearbyText": "",
+    "cssClasses": "card",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.card",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90) rgb(90, 90, 90) rgb(90, 90, 90) rgb(0, 0, 0); font-size: 14px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 21px; text-align: start; width: 720px; height: 46px; padding: 2px 0px 2px 12px; margin: 6px 0px 0px; display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "p.text, div.turnbox, div.foot, div.crowd",
+    "attributes": {}
+   }
+  ]
+ },
+ {
+  "t": 1793685204.264411,
+  "output": "## Page Feedback: /sketch?feedback\n**App:** whose-words sketch\n**Viewport:** 1512×752\n\n### 1. doors show\n**Location:** #log > section > .reply > .doors\n**Feedback:** the doors show element doesn't really make sense to me, what is it trying to show? if it's not important, it shouldn't show up.\n\n### 2. paragraph: \"Barnaby was a scruffy terrier mix, a bit...\"\n**Location:** #log > section > .reply > .text\n**Feedback:** the lines above and underneath the lines of words should align together evenly\n\n### 3. ask\n**Location:** #main > #log > section > .ask\n**Feedback:** make the ask section align right properly\n\n### 4. paragraph: \"Each reply is one path through every tex...\"\n**Location:** header > .top > p\n**Feedback:** get rid of this\n\n### 5. button \"hear the crowd\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** replace \"hear the crowd\" with \"see fully user-trained response:\"\n\n### 6. button \"hide the crowd\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** remove this button\n\n### 7. button \"asked51.0 bits\n      boug\"\n**Location:** section > .reply > .foot > .fare\n**Feedback:** rephrase the \"asked\" \"bought\" to be more coherent\n\n### 8. card\n**Location:** #log > section > .reply > .card\n**Feedback:** the contents here should show up on-hover in a card above the hovered word.\n\n### 9. card\n**Location:** #log > section > .reply > .card\n**Feedback:** remove this card\n\n### 10. h1 \"Whose words?\"\n**Location:** header > .top > h1\n**Feedback:** change to \"prototype 0.3\"",
+  "annotations": [
+   {
+    "id": "1793684206675",
+    "x": 68.98148148148148,
+    "y": 385,
+    "comment": "the doors show element doesn't really make sense to me, what is it trying to show? if it's not important, it shouldn't show up.",
+    "element": "doors show",
+    "elementPath": "#log > section > .reply > .doors",
+    "timestamp": 1793684224284,
+    "boundingBox": {
+     "x": 938.5,
+     "y": 339.65625,
+     "width": 120,
+     "height": 124.5
+    },
+    "nearbyText": "other doorschaotic20%tapestry14%symphony8%",
+    "cssClasses": "doors, show",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.doors",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: start; width: 120px; height: 124.5px; padding: 8px 10px; border: 1px solid rgb(0, 0, 0); display: flex; position: absolute; top: 182.438px; right: 50px; bottom: 149.234px; left: 550px; z-index: 3; flex-direction: column; gap: 4px; opacity: 1",
+    "nearbyElements": "p.text, div.card, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793684227545",
+    "x": 27.18253968253968,
+    "y": 164,
+    "comment": "the lines above and underneath the lines of words should align together evenly",
+    "element": "paragraph: \"Barnaby was a scruffy terrier mix, a bit...\"",
+    "elementPath": "#log > section > .reply > .text",
+    "timestamp": 1793684239667,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 157.21875,
+     "width": 720,
+     "height": 239.375
+    },
+    "nearbyText": "[after: \"other doorsIn2%Pat1%The1%\"]",
+    "cssClasses": "text",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > p.text",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 21px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 59.85px; text-align: start; width: 720px; height: 239.375px; padding: 0px 2px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "div.doors, div.card, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793684245862",
+    "x": 63.69047619047619,
+    "y": 111,
+    "comment": "make the ask section align right properly",
+    "element": "ask",
+    "elementPath": "#main > #log > section > .ask",
+    "timestamp": 1793684252668,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 87.71875,
+     "width": 576,
+     "height": 69.5
+    },
+    "nearbyText": "kellyTell me a story about a dog.",
+    "cssClasses": "ask",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.ask",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: right; width: 576px; height: 69.5px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "div.reply",
+    "attributes": {}
+   },
+   {
+    "id": "1793684259959",
+    "x": 47.08994708994709,
+    "y": 49,
+    "comment": "get rid of this",
+    "element": "paragraph: \"Each reply is one path through every tex...\"",
+    "elementPath": "header > .top > p",
+    "timestamp": 1793684262315,
+    "boundingBox": {
+     "x": 503.1484375,
+     "y": 12,
+     "width": 490.4296875,
+     "height": 58.5
+    },
+    "nearbyText": "[before: \"Whose words?\"] [after: \"open the walls\"]",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > header > div.top > p",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: start; width: 490.43px; height: 58.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h1, button.walls-btn \"open the walls\"",
+    "attributes": {}
+   },
+   {
+    "id": "1793684272606",
+    "x": 30.555555555555557,
+    "y": 410,
+    "comment": "replace \"hear the crowd\" with \"see fully user-trained response:\"",
+    "element": "button \"hear the crowd\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793684295445,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 404.71875,
+     "width": 90.5078125,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"shaped by dogisakellyisabelzhaniyaanon\"] hear the crowd",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 90.5078px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"asked41.0 bits\n\", span.lev, span.people",
+    "attributes": {}
+   },
+   {
+    "id": "1793684303969",
+    "x": 70.63492063492063,
+    "y": 521,
+    "comment": "remove this button",
+    "element": "button \"hide the crowd\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793684306532,
+    "boundingBox": {
+     "x": 1018.71875,
+     "y": 512.34375,
+     "width": 89.578125,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"shaped by dogJoeBinnaEmma\"] hide the crowd",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 89.5781px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"asked51.0 bits\n\", span.lev, span.people",
+    "attributes": {}
+   },
+   {
+    "id": "1793684318504",
+    "x": 34.06084656084656,
+    "y": 528,
+    "comment": "rephrase the \"asked\" \"bought\" to be more coherent",
+    "element": "button \"asked51.0 bits\n      boug\"",
+    "elementPath": "section > .reply > .foot > .fare",
+    "timestamp": 1793684327405,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 500.59375,
+     "width": 232.078125,
+     "height": 43
+    },
+    "nearbyText": "asked51.0 bits\n      bought80.5 bits [after: \"1.6×\"]",
+    "cssClasses": "fare",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.fare",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: left; width: 232.078px; height: 43px; border: 0px none rgb(90, 90, 90); display: grid; flex-direction: row; align-items: center; gap: 4px 8px; opacity: 1",
+    "nearbyElements": "span.lev, span.people, button.linkish \"hide the crowd\"",
+    "attributes": {}
+   },
+   {
+    "id": "1793684772465",
+    "x": 54.232804232804234,
+    "y": 481,
+    "comment": "the contents here should show up on-hover in a card above the hovered word.",
+    "element": "card",
+    "elementPath": "#log > section > .reply > .card",
+    "timestamp": 1793684781604,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 443.09375,
+     "width": 720,
+     "height": 46
+    },
+    "nearbyText": "",
+    "cssClasses": "card",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.card",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90) rgb(90, 90, 90) rgb(90, 90, 90) rgb(0, 0, 0); font-size: 14px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 21px; text-align: start; width: 720px; height: 46px; padding: 2px 0px 2px 12px; margin: 6px 0px 0px; display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "p.text, div.turnbox, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793685150273",
+    "x": 55.29100529100529,
+    "y": 532,
+    "comment": "remove this card",
+    "element": "card",
+    "elementPath": "#log > section > .reply > .card",
+    "timestamp": 1793685152999,
+    "boundingBox": {
+     "x": 388.5,
+     "y": 488.21875,
+     "width": 720,
+     "height": 46
+    },
+    "nearbyText": "",
+    "cssClasses": "card",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.card",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90) rgb(90, 90, 90) rgb(90, 90, 90) rgb(0, 0, 0); font-size: 14px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 21px; text-align: start; width: 720px; height: 46px; padding: 2px 0px 2px 12px; margin: 6px 0px 0px; display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "p.text, div.turnbox, div.foot, div.crowd",
+    "attributes": {}
+   },
+   {
+    "id": "1793685177379",
+    "x": 32.076719576719576,
+    "y": 27,
+    "comment": "change to \"prototype 0.3\"",
+    "element": "h1 \"Whose words?\"",
+    "elementPath": "header > .top > h1",
+    "timestamp": 1793685186751,
+    "boundingBox": {
+     "x": 376,
+     "y": 15.25,
+     "width": 617.578125,
+     "height": 24
+    },
+    "nearbyText": "Whose words? [after: \"open the walls\"]",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > header > div.top > h1",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 16px; font-weight: 600; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 24px; text-align: start; width: 617.578px; height: 24px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.walls-btn \"open the walls\"",
+    "attributes": {}
+   }
+  ]
+ },
+ {
+  "t": 1793710155.290827,
+  "output": "## Page Feedback: /?feedback\n**App:** whose-words\n**Viewport:** 2016×1003\n\n### 1. paragraph: \"reply · 001 · asked by testing\"\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > .eyebrow\n**Feedback:** remove this section entirely\n\n### 2. controls\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > .controls[data-component=\"view-controls\"]\n**Feedback:** these controls can be hidden completely, give the top section a caret to hide this\n\n### 3. text\n**Location:** #canvas[data-component=\"corridor\"] > svg > g[data-component=\"fare-meter\"] > text\n**Feedback:** this text is intersecting the graph too much\n\n### 4. button \"your prompt cost 36.6 bit\"\n**Location:** #stageInner > div > #stagePrice > .price\n**Feedback:** the cost/bought should be visualized in a more visually clear and obvious manner.\n\n### 5. legend\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > #legend[data-component=\"legend\"]\n**Feedback:** the legend should go underneath the response text\n\n### 6. link \"print as a Babel card\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** remove this\n\n### 7. button \"your question cost49.4 bi\"\n**Location:** section > .reply > .foot > .fare\n**Feedback:** this section should be redesigned so that its not as ai-generated\n\n### 8. button \"take this moment with you\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** move this to footer, below the send button",
+  "annotations": [
+   {
+    "id": "1793680465156",
+    "x": 42.06349206349206,
+    "y": 20,
+    "comment": "remove this section entirely",
+    "element": "paragraph: \"reply · 001 · asked by testing\"",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > .eyebrow",
+    "timestamp": 1793680469991,
+    "boundingBox": {
+     "x": 324,
+     "y": 20,
+     "width": 789,
+     "height": 16.5
+    },
+    "nearbyText": "reply · 001 · asked by testing [after: \"what is infinity\"]",
+    "cssClasses": "eyebrow",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > p.eyebrow",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.66px; text-align: start; width: 789px; height: 16.5px; margin: 0px 0px 6px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h2, div, div.controls, p.reading (9 total in .stage-inner)",
+    "attributes": {}
+   },
+   {
+    "id": "1793680473902",
+    "x": 64.0873015873016,
+    "y": 136,
+    "comment": "these controls can be hidden completely, give the top section a caret to hide this",
+    "element": "controls",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > .controls[data-component=\"view-controls\"]",
+    "timestamp": 1793680496442,
+    "boundingBox": {
+     "x": 324,
+     "y": 113,
+     "width": 789,
+     "height": 52.5
+    },
+    "nearbyText": "memoryweightslibrary\n       people\n       fare meter\n       open the walls (Babel) [after: \"Infinity? The concept of?\"]",
+    "cssClasses": "controls",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div.controls",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 15px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 22.5px; text-align: start; width: 789px; height: 52.5px; padding: 10px 0px; margin: 16px 0px 14px; display: flex; flex-direction: row; align-items: center; gap: 10px 18px; opacity: 1",
+    "nearbyElements": "p.eyebrow, h2, div, p.reading (9 total in .stage-inner)",
+    "attributes": {
+     "data-component": "view-controls"
+    }
+   },
+   {
+    "id": "1793680511903",
+    "x": 64.15343915343915,
+    "y": 555,
+    "comment": "this text is intersecting the graph too much",
+    "element": "text",
+    "elementPath": "#canvas[data-component=\"corridor\"] > svg > g[data-component=\"fare-meter\"] > text",
+    "timestamp": 1793680520285,
+    "boundingBox": {
+     "x": 750.7666015625,
+     "y": 544.75,
+     "width": 263.2421875,
+     "height": 12
+    },
+    "nearbyText": "Babel: 126 bits by the end, off the chart",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div#canvas > svg > g > text",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 10px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; letter-spacing: 0.4px; text-align: start; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793680523840",
+    "x": 44.77513227513227,
+    "y": 93,
+    "comment": "the cost/bought should be visualized in a more visually clear and obvious manner.",
+    "element": "button \"your prompt cost 36.6 bit\"",
+    "elementPath": "#stageInner > div > #stagePrice > .price",
+    "timestamp": 1793680545872,
+    "boundingBox": {
+     "x": 324,
+     "y": 79.5,
+     "width": 383.1875,
+     "height": 16.5
+    },
+    "nearbyText": "your prompt cost 36.6 bits to reach · 54.0 bits in Babel",
+    "cssClasses": "price",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div > span#stagePrice > button.price",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.22px; text-align: left; width: 383.188px; height: 16.5px; border: 0px none rgb(0, 0, 0); display: inline-block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793680558897",
+    "x": 57.473544973544975,
+    "y": 598,
+    "comment": "the legend should go underneath the response text",
+    "element": "legend",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > #legend[data-component=\"legend\"]",
+    "timestamp": 1793680569010,
+    "boundingBox": {
+     "x": 324,
+     "y": 565.25,
+     "width": 789,
+     "height": 41.5
+    },
+    "nearbyText": "",
+    "cssClasses": "legend",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div#legend",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 12.5px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 18.75px; text-align: start; width: 789px; height: 41.5px; margin: 8px 0px 0px; border: 0px none rgb(0, 0, 0); display: flex; flex-direction: row; gap: 4px 16px; opacity: 1",
+    "nearbyElements": "p.eyebrow, h2, div, div.controls (9 total in .stage-inner)",
+    "attributes": {
+     "data-component": "legend"
+    }
+   },
+   {
+    "id": "1793709982665",
+    "x": 63.938492063492056,
+    "y": 396,
+    "comment": "remove this",
+    "element": "link \"print as a Babel card\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793709986685,
+    "boundingBox": {
+     "x": 1218.25,
+     "y": 391.5208435058594,
+     "width": 124.19792175292969,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"see fully user-trained response\"] print as a Babel card [after: \"take this moment with you\"]",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > a.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: start; width: 124.198px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"your question c\", span.lev, span.people, button.linkish \"see fully user-\" (6 total in .foot)",
+    "attributes": {}
+   },
+   {
+    "id": "1793709992077",
+    "x": 38.98809523809524,
+    "y": 375,
+    "comment": "this section should be redesigned so that its not as ai-generated",
+    "element": "button \"your question cost49.4 bi\"",
+    "elementPath": "section > .reply > .foot > .fare",
+    "timestamp": 1793710016296,
+    "boundingBox": {
+     "x": 648,
+     "y": 338.5208435058594,
+     "width": 325.8333435058594,
+     "height": 43
+    },
+    "nearbyText": "your question cost49.4 bits\n      and saved the reply49.9 bits [after: \"1.0× return\"]",
+    "cssClasses": "fare",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.fare",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: left; width: 325.833px; height: 43px; border: 0px none rgb(90, 90, 90); display: grid; flex-direction: row; align-items: center; gap: 4px 8px; opacity: 1",
+    "nearbyElements": "span.lev, span.people, button.linkish \"see fully user-\", a.linkish \"print as a Babe\" (6 total in .foot)",
+    "attributes": {}
+   },
+   {
+    "id": "1793710126457",
+    "x": 39.682539682539684,
+    "y": 439,
+    "comment": "move this to footer, below the send button",
+    "element": "button \"take this moment with you\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793710153630,
+    "boundingBox": {
+     "x": 648,
+     "y": 421.0208435058594,
+     "width": 158.9375,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"print as a Babel card\"] take this moment with you",
+    "cssClasses": "linkish, take",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 158.938px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"your question c\", span.lev, span.people, button.linkish \"see fully user-\" (6 total in .foot)",
+    "attributes": {}
+   }
+  ]
+ },
+ {
+  "t": 1793711147.5635011,
+  "output": "## Page Feedback: /?feedback\n**App:** whose-words\n**Viewport:** 2016×1003\n\n### 1. paragraph: \"reply · 001 · asked by testing\"\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > .eyebrow\n**Feedback:** remove this section entirely\n\n### 2. controls\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > .controls[data-component=\"view-controls\"]\n**Feedback:** these controls can be hidden completely, give the top section a caret to hide this\n\n### 3. text\n**Location:** #canvas[data-component=\"corridor\"] > svg > g[data-component=\"fare-meter\"] > text\n**Feedback:** this text is intersecting the graph too much\n\n### 4. button \"your prompt cost 36.6 bit\"\n**Location:** #stageInner > div > #stagePrice > .price\n**Feedback:** the cost/bought should be visualized in a more visually clear and obvious manner.\n\n### 5. legend\n**Location:** .app > #stage[data-component=\"stage\"] > #stageInner > #legend[data-component=\"legend\"]\n**Feedback:** the legend should go underneath the response text\n\n### 6. link \"print as a Babel card\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** remove this\n\n### 7. button \"your question cost49.4 bi\"\n**Location:** section > .reply > .foot > .fare\n**Feedback:** this section should be redesigned so that its not as ai-generated\n\n### 8. button \"take this moment with you\"\n**Location:** section > .reply > .foot > .linkish\n**Feedback:** move this to footer, below the send button\n\n### 9. button \"take this moment with you\"\n**Location:** .dock > .inner > .dock-actions > #takeBtn\n**Feedback:** this button should line up with the content in the row beneath\n\n### 10. paragraph: \"How many more bits your question would c...\"\n**Location:** #side > #sideBody > .meta\n**Feedback:** remove this paragraph\n\n### 11. paragraph: \"who paid for your trip\"\n**Location:** #side > #sideBody > .sec\n**Feedback:** change to \"who lowered the price\"\n\n### 12. \"the exchange\"\n**Location:** #side > .side-top > #sideTitle\n**Feedback:** change to \"market prices\"\n\n### 13. button \"open the walls\"\n**Location:** header > .top > #walls\n**Feedback:** change to \"Babel-space\"",
+  "annotations": [
+   {
+    "id": "1793680465156",
+    "x": 42.06349206349206,
+    "y": 20,
+    "comment": "remove this section entirely",
+    "element": "paragraph: \"reply · 001 · asked by testing\"",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > .eyebrow",
+    "timestamp": 1793680469991,
+    "boundingBox": {
+     "x": 324,
+     "y": 20,
+     "width": 789,
+     "height": 16.5
+    },
+    "nearbyText": "reply · 001 · asked by testing [after: \"what is infinity\"]",
+    "cssClasses": "eyebrow",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > p.eyebrow",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.66px; text-align: start; width: 789px; height: 16.5px; margin: 0px 0px 6px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h2, div, div.controls, p.reading (9 total in .stage-inner)",
+    "attributes": {}
+   },
+   {
+    "id": "1793680473902",
+    "x": 64.0873015873016,
+    "y": 136,
+    "comment": "these controls can be hidden completely, give the top section a caret to hide this",
+    "element": "controls",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > .controls[data-component=\"view-controls\"]",
+    "timestamp": 1793680496442,
+    "boundingBox": {
+     "x": 324,
+     "y": 113,
+     "width": 789,
+     "height": 52.5
+    },
+    "nearbyText": "memoryweightslibrary\n       people\n       fare meter\n       open the walls (Babel) [after: \"Infinity? The concept of?\"]",
+    "cssClasses": "controls",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div.controls",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 15px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 22.5px; text-align: start; width: 789px; height: 52.5px; padding: 10px 0px; margin: 16px 0px 14px; display: flex; flex-direction: row; align-items: center; gap: 10px 18px; opacity: 1",
+    "nearbyElements": "p.eyebrow, h2, div, p.reading (9 total in .stage-inner)",
+    "attributes": {
+     "data-component": "view-controls"
+    }
+   },
+   {
+    "id": "1793680511903",
+    "x": 64.15343915343915,
+    "y": 555,
+    "comment": "this text is intersecting the graph too much",
+    "element": "text",
+    "elementPath": "#canvas[data-component=\"corridor\"] > svg > g[data-component=\"fare-meter\"] > text",
+    "timestamp": 1793680520285,
+    "boundingBox": {
+     "x": 750.7666015625,
+     "y": 544.75,
+     "width": 263.2421875,
+     "height": 12
+    },
+    "nearbyText": "Babel: 126 bits by the end, off the chart",
+    "cssClasses": "",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div#canvas > svg > g > text",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 10px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; letter-spacing: 0.4px; text-align: start; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793680523840",
+    "x": 44.77513227513227,
+    "y": 93,
+    "comment": "the cost/bought should be visualized in a more visually clear and obvious manner.",
+    "element": "button \"your prompt cost 36.6 bit\"",
+    "elementPath": "#stageInner > div > #stagePrice > .price",
+    "timestamp": 1793680545872,
+    "boundingBox": {
+     "x": 324,
+     "y": 79.5,
+     "width": 383.1875,
+     "height": 16.5
+    },
+    "nearbyText": "your prompt cost 36.6 bits to reach · 54.0 bits in Babel",
+    "cssClasses": "price",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div > span#stagePrice > button.price",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.22px; text-align: left; width: 383.188px; height: 16.5px; border: 0px none rgb(0, 0, 0); display: inline-block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793680558897",
+    "x": 57.473544973544975,
+    "y": 598,
+    "comment": "the legend should go underneath the response text",
+    "element": "legend",
+    "elementPath": ".app > #stage[data-component=\"stage\"] > #stageInner > #legend[data-component=\"legend\"]",
+    "timestamp": 1793680569010,
+    "boundingBox": {
+     "x": 324,
+     "y": 565.25,
+     "width": 789,
+     "height": 41.5
+    },
+    "nearbyText": "",
+    "cssClasses": "legend",
+    "isFixed": false,
+    "fullPath": "body > div.app > main#stage > div#stageInner > div#legend",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 12.5px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 18.75px; text-align: start; width: 789px; height: 41.5px; margin: 8px 0px 0px; border: 0px none rgb(0, 0, 0); display: flex; flex-direction: row; gap: 4px 16px; opacity: 1",
+    "nearbyElements": "p.eyebrow, h2, div, div.controls (9 total in .stage-inner)",
+    "attributes": {
+     "data-component": "legend"
+    }
+   },
+   {
+    "id": "1793709982665",
+    "x": 63.938492063492056,
+    "y": 396,
+    "comment": "remove this",
+    "element": "link \"print as a Babel card\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793709986685,
+    "boundingBox": {
+     "x": 1218.25,
+     "y": 391.5208435058594,
+     "width": 124.19792175292969,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"see fully user-trained response\"] print as a Babel card [after: \"take this moment with you\"]",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > a.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: start; width: 124.198px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"your question c\", span.lev, span.people, button.linkish \"see fully user-\" (6 total in .foot)",
+    "attributes": {}
+   },
+   {
+    "id": "1793709992077",
+    "x": 38.98809523809524,
+    "y": 375,
+    "comment": "this section should be redesigned so that its not as ai-generated",
+    "element": "button \"your question cost49.4 bi\"",
+    "elementPath": "section > .reply > .foot > .fare",
+    "timestamp": 1793710016296,
+    "boundingBox": {
+     "x": 648,
+     "y": 338.5208435058594,
+     "width": 325.8333435058594,
+     "height": 43
+    },
+    "nearbyText": "your question cost49.4 bits\n      and saved the reply49.9 bits [after: \"1.0× return\"]",
+    "cssClasses": "fare",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.fare",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: left; width: 325.833px; height: 43px; border: 0px none rgb(90, 90, 90); display: grid; flex-direction: row; align-items: center; gap: 4px 8px; opacity: 1",
+    "nearbyElements": "span.lev, span.people, button.linkish \"see fully user-\", a.linkish \"print as a Babe\" (6 total in .foot)",
+    "attributes": {}
+   },
+   {
+    "id": "1793710126457",
+    "x": 39.682539682539684,
+    "y": 439,
+    "comment": "move this to footer, below the send button",
+    "element": "button \"take this moment with you\"",
+    "elementPath": "section > .reply > .foot > .linkish",
+    "timestamp": 1793710153630,
+    "boundingBox": {
+     "x": 648,
+     "y": 421.0208435058594,
+     "width": 158.9375,
+     "height": 19.5
+    },
+    "nearbyText": "[before: \"print as a Babel card\"] take this moment with you",
+    "cssClasses": "linkish, take",
+    "isFixed": false,
+    "fullPath": "body > main#main > div#log > section > div.reply > div.foot > button.linkish",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 158.938px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.fare \"your question c\", span.lev, span.people, button.linkish \"see fully user-\" (6 total in .foot)",
+    "attributes": {}
+   },
+   {
+    "id": "1793710811024",
+    "x": 67.46031746031747,
+    "y": 962,
+    "comment": "this button should line up with the content in the row beneath",
+    "element": "button \"take this moment with you\"",
+    "elementPath": ".dock > .inner > .dock-actions > #takeBtn",
+    "timestamp": 1793710832720,
+    "boundingBox": {
+     "x": 1229.0625,
+     "y": 946.6666870117188,
+     "width": 158.9375,
+     "height": 19.5
+    },
+    "nearbyText": "take this moment with you",
+    "cssClasses": "linkish",
+    "isFixed": false,
+    "fullPath": "body > div.dock > div.inner > div.dock-actions > button#takeBtn",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: center; width: 158.938px; height: 19.5px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "",
+    "attributes": {}
+   },
+   {
+    "id": "1793710856756",
+    "x": 87.40079365079364,
+    "y": 543,
+    "comment": "remove this paragraph",
+    "element": "paragraph: \"How many more bits your question would c...\"",
+    "elementPath": "#side > #sideBody > .meta",
+    "timestamp": 1793710865747,
+    "boundingBox": {
+     "x": 1632.666748046875,
+     "y": 509.4583435058594,
+     "width": 367.3333435058594,
+     "height": 58.5
+    },
+    "nearbyText": "[before: \"Binnaadded 0.1 bits\"]",
+    "cssClasses": "meta",
+    "isFixed": true,
+    "fullPath": "body > aside#side > div#sideBody > p.meta",
+    "accessibility": "",
+    "computedStyles": "color: rgb(90, 90, 90); border-color: rgb(90, 90, 90); font-size: 13px; font-weight: 400; font-family: system-ui, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif; line-height: 19.5px; text-align: start; width: 367.333px; height: 58.5px; margin: 6px 0px 0px; border: 0px none rgb(90, 90, 90); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "p.lbl, p.big, p.meta, p.meta (10 total in .body)",
+    "attributes": {}
+   },
+   {
+    "id": "1793710874275",
+    "x": 88.69047619047619,
+    "y": 430,
+    "comment": "change to \"who lowered the price\"",
+    "element": "paragraph: \"who paid for your trip\"",
+    "elementPath": "#side > #sideBody > .sec",
+    "timestamp": 1793710891429,
+    "boundingBox": {
+     "x": 1632.666748046875,
+     "y": 413.9583435058594,
+     "width": 367.3333435058594,
+     "height": 16.5
+    },
+    "nearbyText": "who paid for your trip",
+    "cssClasses": "sec",
+    "isFixed": true,
+    "fullPath": "body > aside#side > div#sideBody > p.sec",
+    "accessibility": "",
+    "computedStyles": "color: rgb(138, 138, 138); border-color: rgb(138, 138, 138); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.55px; text-align: start; width: 367.333px; height: 16.5px; margin: 14px 0px 4px; border: 0px none rgb(138, 138, 138); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "p.lbl, p.big, p.meta, p.meta (10 total in .body)",
+    "attributes": {}
+   },
+   {
+    "id": "1793710895991",
+    "x": 84.375,
+    "y": 29,
+    "comment": "change to \"market prices\"",
+    "element": "\"the exchange\"",
+    "elementPath": "#side > .side-top > #sideTitle",
+    "timestamp": 1793710906179,
+    "boundingBox": {
+     "x": 1630.666748046875,
+     "y": 16.75,
+     "width": 86.07292175292969,
+     "height": 16.5
+    },
+    "nearbyText": "the exchange [after: \"✕\"]",
+    "cssClasses": "mono",
+    "isFixed": true,
+    "fullPath": "body > aside#side > div.side-top > span#sideTitle",
+    "accessibility": "",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.55px; text-align: start; width: 86.0729px; height: 16.5px; border: 0px none rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "button.close \"✕\"",
+    "attributes": {}
+   },
+   {
+    "id": "1793710913771",
+    "x": 66.36904761904762,
+    "y": 24,
+    "comment": "change to \"Babel-space\"",
+    "element": "button \"open the walls\"",
+    "elementPath": "header > .top > #walls",
+    "timestamp": 1793710921269,
+    "boundingBox": {
+     "x": 1262.25,
+     "y": 12,
+     "width": 125.75,
+     "height": 29.83333396911621
+    },
+    "nearbyText": "[before: \"stream\"] open the walls",
+    "cssClasses": "hbtn",
+    "isFixed": false,
+    "fullPath": "body > header > div.top > button#walls",
+    "accessibility": "focusable",
+    "computedStyles": "color: rgb(0, 0, 0); border-color: rgb(0, 0, 0); font-size: 11px; font-weight: 400; font-family: ui-monospace, \"SF Mono\", Menlo, Consolas, monospace; line-height: 16.5px; letter-spacing: 0.55px; text-align: center; width: 125.75px; height: 29.8333px; padding: 6px 12px; border: 0.666667px solid rgb(0, 0, 0); display: block; flex-direction: row; opacity: 1",
+    "nearbyElements": "h1, button.hbtn \"stream\"",
+    "attributes": {}
+   }
+  ]
+ }
+]

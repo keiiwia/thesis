@@ -3,549 +3,580 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>0.2 proto: catastrophic forgetting whose words?</title>
+<title>prototype 0.3</title>
+<!-- Agentation (design feedback toolbar) loads only with ?feedback in the URL; see the end of the page. -->
+<script type="importmap">{"imports":{
+  "react":"https://esm.sh/react@18.3.1",
+  "react/jsx-runtime":"https://esm.sh/react@18.3.1/jsx-runtime",
+  "react-dom":"https://esm.sh/react-dom@18.3.1",
+  "react-dom/client":"https://esm.sh/react-dom@18.3.1/client",
+  "agentation":"https://esm.sh/agentation@3.1.2?external=react,react-dom"
+}}</script>
 <style>
 :root{
-  /* Black and white only. The per-person attribution inks (INKS in the script) are the sole colors. */
-  --bg:#FFFFFF; --ink:#000000; color-scheme:light;
-  --panel:var(--bg); --line:var(--ink); --line-soft:var(--ink);
-  --ink-soft:var(--ink); --ink-faint:var(--ink);
-  --warn:var(--ink); --focus:var(--ink);
-  /* Underline colors for the non-person sources, kept apart from the per-person INKS. */
-  --graphite:#8A8A8A; --far:#FF3B30;
+  --bg:#FFFFFF; --ink:#000000; --soft:#5A5A5A; --faint:#8A8A8A; --hair:#D6D6D6; --hatch:#D0D0D0; --graphite:#8A8A8A;
   --sans:system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme:light;
 }
-*,*::before,*::after{box-sizing:border-box;border-radius:0}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 button,input,textarea{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-a{color:inherit}
-.mono,.who,.lbl,.status,h3,.tabs button,.suggest .src,.eyebrow,.mast-meta{
-  font-family:var(--mono);font-size:11px;letter-spacing:.06em}
-.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-
-.app{display:grid;grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh}
-
-/* masthead */
-.mast{border-bottom:1px solid var(--line);padding:calc(11px + env(safe-area-inset-top,0px)) 16px 10px;
-  display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.mast h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-.005em}
-.mast h1 .sub{font-weight:400;color:var(--ink-soft);margin-left:10px;font-size:14px}
-.mast-meta{display:flex;gap:14px;align-items:baseline;color:var(--ink-faint);flex:none}
-.mast-meta button{background:none;border:0;padding:0;cursor:pointer;color:var(--ink-soft);font:inherit;letter-spacing:inherit;text-transform:inherit}
-.mast-meta button:hover{color:var(--ink)}
-.num{font-variant-numeric:tabular-nums}
-
-.body{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
-
-/* chat */
-.chat{display:flex;flex-direction:column;min-height:0;min-width:0}
-.scroller{flex:1;overflow-y:auto;overscroll-behavior:contain}
-.column{max-width:720px;margin:0 auto;padding:24px 16px 32px}
-
-.empty{padding-top:8vh}
-.eyebrow{color:var(--ink-faint);margin:0 0 10px}
-.empty h2{font-size:clamp(26px,5vw,36px);font-weight:600;line-height:1.1;letter-spacing:-.015em;margin:0 0 10px}
-.empty > p{color:var(--ink-soft);max-width:58ch;margin:0 0 22px}
-.suggests{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.suggest{text-align:left;background:var(--panel);border:1px solid var(--line);padding:10px 12px 11px;cursor:pointer;line-height:1.35}
-.suggest:hover{border-color:var(--ink-soft)}
-.suggest .src{display:block;color:var(--ink-faint);margin-bottom:5px}
-
-.log{display:flex;flex-direction:column;gap:26px}
-.turn.user{display:flex;flex-direction:column;align-items:flex-end}
-.bubble{margin:0;max-width:85%;background:var(--panel);border:1px solid var(--line);border-right:4px solid var(--c);
-  padding:8px 12px 9px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px}
-.bubble .who{display:block;margin:0 0 2px;color:var(--ink-faint)}
-.status{margin:6px 0 0;color:var(--ink-faint);max-width:85%;text-align:right;text-transform:none;letter-spacing:.02em}
-.status.bad{color:var(--warn)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.05em}
 .live::after{content:"_";animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-.turn.bot > .who{color:var(--ink-faint);margin:0 0 4px}
-.wait{color:var(--ink-faint);margin:0;padding:6px 0}
 
-.reply{padding:12px 0 4px}
-.reply.weights{border-top:1px solid var(--line-soft);margin-top:10px}
-.btn.more{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
-.lbl{display:flex;gap:10px;align-items:baseline;color:var(--ink-faint);margin:0 0 6px}
-.lbl b{color:var(--ink);font-weight:400}
-.lbl .m{margin-left:auto;text-transform:none;letter-spacing:.02em;text-align:right}
-.prose{font-size:17px;line-height:1.8;margin:0}
-.tok{background:var(--strip);border:0;padding:0 0 4px;margin:0;font:inherit;cursor:pointer}
-.tok.pending{display:none}
-.tok:hover{outline:1px dotted var(--ink)}
-.tok[aria-pressed=true]{outline:1px solid var(--ink)}
-.tok.weak{text-decoration:underline dotted var(--far) 1.5px;text-underline-offset:9px}
-.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:10px 0 0;font-size:12.5px;color:var(--ink-soft)}
-.sw{display:inline-block;width:14px;height:4px;background:var(--c);vertical-align:middle;margin-right:5px;outline:1px solid var(--ink)}
-.alts{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
-.btn{padding:5px 10px;border:1px solid var(--line);background:none;cursor:pointer;font-size:12.5px}
-.btn:hover{border-color:var(--ink-soft)}
-.btn:disabled{opacity:.45;cursor:default}
-.btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink);text-decoration:none;display:inline-block}
-.regen{margin-top:10px;padding:6px 0 6px 12px;border-left:2px solid var(--line);font-size:15.5px}
-.regen small{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:2px}
+/* header: the name, the stream, and the one big gesture */
+header{border-bottom:1px solid var(--ink);padding:12px 20px}
+.top{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:16px}
+.top h1{font-size:16px;font-weight:600;margin:0;flex:1}
+.hbtn{border:1px solid var(--ink);background:none;padding:6px 12px;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.05em;white-space:nowrap}
+.hbtn.quiet{border-color:transparent;text-decoration:underline;text-underline-offset:3px;padding:6px 4px}
+.hbtn[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.babel-line{max-width:760px;margin:8px auto 0;font-size:13px;color:var(--soft)}
 
-/* dock */
-.dock{border-top:1px solid var(--line);padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px))}
-.dock-inner{max-width:720px;margin:0 auto}
-.composer{display:flex;border:1px solid var(--line);background:var(--panel)}
-.composer:focus-within{border-color:var(--ink-soft)}
-.composer textarea{flex:1;border:0;background:none;resize:none;padding:11px 12px;min-height:44px;max-height:160px;outline:none;line-height:1.4}
-.send{flex:none;width:46px;border:0;border-left:1px solid var(--line);background:var(--ink);color:var(--bg);cursor:pointer;display:grid;place-items:center}
-.send:disabled{background:none;color:var(--ink-faint);cursor:default}
-.who-row{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-top:8px;font-size:13px;color:var(--ink-soft)}
-.who-row label{display:flex;gap:6px;align-items:center}
-.who-row input[type=text]{width:150px;padding:3px 6px;border:1px solid var(--line);background:none}
-.err{color:var(--warn);font-size:13px;margin:6px 0 0}
-.err:empty{display:none}
-.note{color:var(--ink-faint);font-size:12px;margin:8px 0 0}
+main{flex:1;overflow-y:auto}
+.col{max-width:760px;margin:0 auto;padding:28px 20px 40px;display:flex;flex-direction:column;gap:40px}
+.empty{padding-top:8vh}
+.empty h2{font-size:clamp(24px,4vw,34px);font-weight:600;line-height:1.15;letter-spacing:-.015em;margin:0}
 
-/* side panel */
-.panel{border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:var(--bg)}
-.tabs{display:flex;border-bottom:1px solid var(--line);flex:none}
-.tabs button{flex:1;background:none;border:0;border-right:1px solid var(--line);padding:11px 6px 10px;cursor:pointer;color:var(--ink-faint)}
-.tabs button:last-child{border-right:0}
-.tabs button[aria-selected=true]{color:var(--bg);background:var(--ink)}
-.tabs .close{flex:0 0 46px;display:none}
-.pane{overflow-y:auto;padding:16px;flex:1}
-.pane[hidden]{display:none}
-.hint{color:var(--ink-soft);font-size:13.5px;margin:0 0 12px}
-.meta{font-size:12.5px;color:var(--ink-soft)}
-.big{font-size:30px;font-weight:600;line-height:1.1;margin:2px 0 4px;word-break:break-word;letter-spacing:-.01em}
-.bar{display:flex;height:12px;overflow:hidden;margin:10px 0 6px;background:var(--bg);outline:1px solid var(--ink)}
-.bar span{background:var(--c);min-width:2px}
-.shares{list-style:none;padding:0;margin:0;font-size:13.5px}
-.shares li{display:flex;justify-content:space-between;gap:12px;padding:2px 0}
-h3{color:var(--ink-faint);font-weight:400;margin:22px 0 6px}
-.nb{list-style:none;padding:0;margin:0}
-.nb li{padding:8px 0 8px 12px;border-top:1px solid var(--line-soft);position:relative}
-.nb li::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;background:var(--c)}
-.nb li.other{opacity:.6}
-.nb .src{font-size:12.5px;font-weight:600}
-.ctx{font-size:14px;margin:2px 0}
-.ctx mark{background:color-mix(in srgb, var(--c) 35%, transparent);color:inherit;padding:0 1px}
-.flag{color:var(--warn);font-size:13px;margin:10px 0 0;padding:8px 10px;border:1px solid var(--ink)}
-.flag.quiet{color:var(--ink-soft);border-color:var(--line)}
-table{border-collapse:collapse;width:100%;font-size:13px}
-td,th{text-align:left;padding:3px 6px 3px 0;vertical-align:top}
-th{font-weight:400;color:var(--ink-faint)}
-.cf-flip{color:var(--warn);font-weight:600}
-.entries{list-style:none;padding:0;margin:0}
-.entries li{padding:10px 0 10px 12px;border-top:1px solid var(--line-soft);position:relative}
-.entries li::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;background:var(--c)}
-.entries .src{font-size:12.5px;font-weight:600}
-.entries .text{margin:2px 0;font-size:14.5px}
-.train{font-size:12px;color:var(--ink-soft);display:block;margin-top:2px}
-.linkbtn{background:none;border:0;padding:0;color:var(--ink-soft);text-decoration:underline;cursor:pointer;font-size:12px}
-.forget svg{width:100%;height:84px;display:block;margin:6px 0}
-.forget .line{fill:none;stroke:var(--warn);stroke-width:1.5}
-.forget .axis{stroke:var(--line);stroke-width:1}
-.forget .dot{fill:var(--warn)}
-.forget ol{list-style:none;padding:0;margin:8px 0 0;font-size:13px}
-.forget li{padding:6px 0;border-top:1px solid var(--line-soft)}
-.about p{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
+/* a turn: the question, then the reply drawn as a corridor */
+.ask{margin-left:auto;width:fit-content;max-width:80%;text-align:right;margin-bottom:30px}
+.ask .who{color:var(--faint)}
+.ask p{margin:2px 0 0;font-size:17px;padding:8px 12px;border:1px solid var(--ink);display:inline-block;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere}
+.ask .status{display:block;margin-top:5px;color:var(--faint)}
+.wait{color:var(--faint);margin:0}
 
-@media (max-width: 900px){
-  .body{grid-template-columns:1fr}
-  .panel{position:fixed;inset:0;z-index:10;display:none;border-left:0}
-  .panel.open{display:flex}
-  .tabs .close{display:block}
-  .suggests{grid-template-columns:1fr}
-  .mast h1 .sub{display:none}
-}
+.reply{position:relative}
+.text{font-size:21px;line-height:2.85;margin:0;padding:0 2px}
+/* one token, with a highlighter stroke in the ink of whoever's words carried it */
+.w{display:inline-block;position:relative;white-space:pre;line-height:1.25;cursor:pointer;--h:14px;
+   background-image:linear-gradient(transparent 52%, var(--mark, transparent) 52%, var(--mark, transparent) 92%, transparent 92%)}
+/* walls sit at an even distance on every line; where other words were open, the wall breaks into openings */
+.w::before,.w::after{content:"";position:absolute;left:0;right:0;height:1px;background:var(--wall, var(--ink));transition:transform .5s ease, opacity .4s}
+.w::before{top:calc(-1 * var(--h))}
+.w::after{bottom:calc(-1 * var(--h))}
+.w:hover,.w.on{background-color:#F0F0F0}
+.w.picked{outline:1px solid var(--ink);outline-offset:2px}
+/* a fork: someone's words turned the path here. A notch cut through the top wall, in their ink. */
+.w .notch{position:absolute;left:-1px;top:calc(-1 * var(--h) - 9px);width:3px;height:calc(var(--h) + 9px);background:var(--c)}
+.w .notch::after{content:"";position:absolute;left:-3px;top:-6px;border:4.5px solid transparent;border-top:6px solid var(--c)}
 @media (prefers-reduced-motion: no-preference){
-  .turn{animation:rise .2s ease-out both}
-  @keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .text.fresh .w{animation:arrive .35s ease-out both;animation-delay:calc(var(--k) * 14ms)}
+  @keyframes arrive{from{opacity:0}to{opacity:1}}
 }
+
+/* shared inspector pieces: the hover card and the sidebar use the same parts */
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--faint);margin:0 0 4px}
+.big{font-size:28px;font-weight:600;line-height:1.1;margin:0 0 6px;letter-spacing:-.01em;white-space:pre-wrap;word-break:break-word}
+.meta{font-size:13px;color:var(--soft);margin:0}
+.bar{display:flex;height:10px;margin:10px 0 6px;outline:1px solid var(--ink)}
+.bar span{background:var(--c);min-width:2px}
+.shares{list-style:none;padding:0;margin:0;font-size:14px}
+.shares li{display:flex;justify-content:space-between;gap:12px;padding:1px 0}
+.sw{display:inline-block;width:14px;height:4px;background:var(--c);vertical-align:middle;margin-right:6px;outline:1px solid var(--ink)}
+.sec{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--faint);margin:14px 0 4px;font-weight:400}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+td,th{text-align:left;padding:2px 8px 2px 0;vertical-align:top}
+th{font-weight:400;color:var(--faint)}
+.flip{font-weight:600}
+.turn .row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;font-size:14px}
+.turn .ctx{color:var(--faint)}
+.turn .alone b{font-weight:600;text-decoration:line-through;text-decoration-thickness:1px;color:var(--soft)}
+.turn .took b{font-weight:600;background:linear-gradient(transparent 55%, color-mix(in srgb, var(--c) 70%, transparent) 55%)}
+.flag{font-size:13px;margin:10px 0 0;padding:7px 9px;border:1px solid var(--ink)}
+.flag.quiet{border-color:var(--hair)}
+.btn{padding:5px 10px;border:1px solid var(--ink);background:none;cursor:pointer;font-size:13px;text-decoration:none;display:inline-block}
+.btn.solid{background:var(--ink);color:var(--bg)}
+.err{color:var(--ink);font-size:13px;margin:6px 0 0;font-weight:600}
+.err:empty{display:none}
+
+/* the hover card: above the word in focus, transparent to the mouse so it never blocks words under it */
+.hc{position:absolute;z-index:3;display:none;pointer-events:none;padding:11px 13px 12px;background:var(--bg);border:1px solid var(--ink);
+    width:330px;max-width:92%;color:var(--soft)}
+.hc.show{display:block}
+.hc.simple{width:max-content;max-width:min(380px, 92%);font-size:14px;padding:9px 12px 10px}
+.hc.simple b{color:var(--ink);font-weight:600}
+.hc .hint{font-size:12px;color:var(--faint);margin:10px 0 0}
+.hc .more{font-size:12px;color:var(--faint)}
+
+/* the sidebar: hidden until a word, the fare, or the stream is clicked */
+.side{position:fixed;top:0;right:0;bottom:0;width:min(400px, 100%);background:var(--bg);border-left:1px solid var(--ink);z-index:10;
+      transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column}
+.side.open{transform:none}
+.side .side-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--ink);padding:10px 14px}
+.side .close{background:none;border:1px solid var(--ink);width:30px;height:30px;cursor:pointer}
+.side .body{overflow-y:auto;padding:16px;flex:1}
+.nb,.entries{list-style:none;padding:0;margin:0}
+.nb li,.entries li{padding:7px 0 7px 12px;border-top:1px solid var(--hair);position:relative;font-size:13.5px}
+.nb li::before,.entries li::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;background:var(--c)}
+.nb li.other{opacity:.6}
+.nb .src,.entries .src{font-weight:600;font-size:13px}
+.nb mark{background:color-mix(in srgb, var(--c) 40%, transparent);color:inherit}
+.entries p{margin:2px 0}
+.linkbtn{background:none;border:0;padding:0;color:var(--soft);text-decoration:underline;cursor:pointer;font-size:12px}
+
+/* under each reply: the fare, who shaped it, the user-trained response */
+.foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:16px;font-size:13px;color:var(--soft)}
+.told{margin:0;font-size:15px;line-height:1.6;color:var(--soft);max-width:62ch;flex-basis:100%}
+.told .nm{color:var(--ink);background:linear-gradient(transparent 58%, color-mix(in srgb, var(--c) 60%, transparent) 58%)}
+.fare{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.fare:hover{color:var(--ink)}
+.linkish{background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;color:var(--soft);font-size:13px}
+.crowd{margin-top:14px;padding:10px 0 0 12px;border-left:2px solid var(--hair)}
+.crowd p{margin:4px 0 0;font-size:17px;line-height:1.7;color:var(--soft);padding-bottom:2px;white-space:pre-wrap;
+  background:var(--stripes) left bottom / 100% 2px no-repeat;display:inline}
+.crowd[hidden]{display:none}
+
+/* Babel: the walls open, the measure lifts, and every reply dissolves into one of all possible texts */
+body.babel .text{background:repeating-linear-gradient(45deg, var(--hatch) 0 1px, transparent 1px 7px)}
+body.babel .w::before{transform:translateY(-18px);opacity:0}
+body.babel .w::after{transform:translateY(18px);opacity:0}
+body.babel .w{background-image:none;color:var(--faint)}
+body.babel .notch{display:none}
+
+/* composer */
+.dock{border-top:1px solid var(--ink);padding:12px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+.dock .inner{max-width:760px;margin:0 auto}
+.composer{display:flex;border:1px solid var(--ink)}
+.composer textarea{flex:1;border:0;resize:none;padding:11px 12px;min-height:46px;max-height:160px;outline:none;line-height:1.4;background:none}
+.composer button{width:46px;border:0;border-left:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.composer button:disabled{background:none;color:var(--faint);cursor:default}
+/* speaking instead of typing: the mic sits beside send, filled while it listens */
+.composer .mic{background:none;color:var(--ink);display:grid;place-items:center}
+.composer .mic[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.composer .mic[aria-pressed=true] svg{animation:listen 1.2s ease-in-out infinite}
+@keyframes listen{50%{opacity:.35}}
+@media (prefers-reduced-motion: reduce){ .composer .mic[aria-pressed=true] svg{animation:none} }
+.who-row{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:flex-start;margin-top:8px;font-size:13px;color:var(--soft)}
+.who-row label{display:flex;gap:6px;align-items:flex-start}
+.who-row input[type=text]{width:150px;padding:3px 6px;border:1px solid var(--ink);background:none}
+.who-row[hidden],.as[hidden]{display:none}
+.as{margin:6px 0 0;color:var(--faint)}
+.dock-actions{display:flex;justify-content:flex-start;margin-top:8px}
+.dock-actions .linkish{font-size:13px}
+.as button{background:none;border:0;padding:0;color:var(--faint);text-decoration:underline;cursor:pointer;font:inherit;letter-spacing:inherit}
+
+@media (max-width: 600px){
+  .text{font-size:19px;line-height:2.7}
+  .ask{max-width:92%}
+  .top{gap:8px}
+}
+@media (prefers-reduced-motion: reduce){ .w::before,.w::after,.side{transition:none} }
 </style>
 </head>
 <body>
-<div class="app">
+<header>
+  <div class="top">
+    <h1>prototype 0.3</h1>
+    <button class="hbtn quiet" id="streamBtn" type="button">stream</button>
+    <button class="hbtn" id="walls" type="button" aria-pressed="false">Babel-space</button>
+  </div>
+  <p class="babel-line" id="babelLine" hidden></p>
+</header>
 
-  <!-- <header class="mast">
-    <h1>Whose words? <span class="sub">a chat that learns from everyone in it</span></h1>
-    <div class="mast-meta">
-      <button type="button" data-open="stream">stream · <span id="streamCount" class="num">000</span></button>
-      <button type="button" data-open="forget">forgetting</button>
+<main id="main"><div class="col" id="log">
+  <section class="empty" id="empty"><h2>Hi there, say anything or ask me anything. Tell me a story, or share a hot take.</h2></section>
+</div></main>
+
+<div class="dock">
+  <div class="inner">
+    <form class="composer" id="composer">
+      <textarea id="msg" rows="1" maxlength="1000" placeholder="Say something…" aria-label="Message" autocomplete="off"></textarea>
+      <button class="mic" id="micBtn" type="button" aria-label="Speak" aria-pressed="false" title="Speak instead of typing">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      <button id="sendBtn" type="submit" aria-label="Send" disabled>↑</button>
+    </form>
+    <div class="dock-actions"><button class="linkish" id="takeBtn" type="button" hidden>take this moment with you</button></div>
+    <div class="who-row" id="whoRow">
+      <label>Name <input id="name" type="text" maxlength="24" autocomplete="off"></label>
+      <label><input id="consent" type="checkbox"> My messages will be stored, trained into the model, and shown with my name to anyone using this. This data will not be used for any other purpose.</label>
     </div>
-  </header> -->
-
-  <div class="body">
-    <div class="chat">
-      <main class="scroller" id="scroller">
-        <div class="column">
-          <section class="empty" id="empty">
-            <!-- <p class="eyebrow">nothing yet</p> -->
-            <h2>Hi there, say anything or ask me anything. Tell me a story, or share a hot take.</h2>
-            <!-- <p>Each message gets two replies built from what everyone has said so far: one looked up in memory, one from weights trained on it. Then the model learns your message, so it can shape the replies that come after, including replies to other people. Tap any word in a reply to see where it came from.</p> -->
-            <!-- <div class="suggests" id="suggests"></div> -->
-          </section>
-          <div class="log" id="log" aria-label="Conversation"></div>
-        </div>
-      </main>
-
-      <div class="dock">
-        <div class="dock-inner">
-          <form class="composer" id="composer">
-            <label class="sr-only" for="msg">Message</label>
-            <textarea id="msg" rows="1" maxlength="1000" placeholder="Say something…" autocomplete="off"></textarea>
-            <button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>
-              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
-            </button>
-          </form>
-          <div class="who-row">
-            <label>Name <input id="name" type="text" maxlength="24" autocomplete="off"></label>
-            <label><input id="consent" type="checkbox"> My messages will be stored, trained into the model, and shown with my name to anyone using this. This data will not be used for any other purpose.</label>
-          </div>
-          <p id="sendErr" class="err" role="alert"></p>
-        </div>
-      </div>
-    </div>
-
-    <aside class="panel" id="panel" aria-label="Details">
-      <div class="tabs" role="tablist">
-        <button type="button" role="tab" data-tab="word" aria-selected="true">word</button>
-        <button type="button" role="tab" data-tab="stream" aria-selected="false">stream</button>
-        <!-- <button type="button" role="tab" data-tab="forget" aria-selected="false">forgetting</button> -->
-        <button type="button" role="tab" data-tab="about" aria-selected="false">about</button>
-        <button type="button" class="close" id="closePanel" aria-label="Close">✕</button>
-      </div>
-      <div class="pane" data-pane="word" aria-live="polite">
-        <div id="insp"><p class="hint">Tap a word in a reply. See how much comes from the base model, the training weights (your inputs), etc.</p></div>
-      </div>
-      <div class="pane" data-pane="stream" hidden>
-        <p class="hint">Everything people have said. Each message is stored in memory and trained into its author's adapter.</p>
-        <p id="streamErr" class="err" role="alert"></p>
-        <ul id="entries" class="entries"></ul>
-      </div>
-      <div class="pane forget" data-pane="forget" hidden>
-        <p class="hint">Each message trains its author's adapter. These are unrelated questions the model was checked on before anyone said anything.</p>
-        <div id="forget"></div>
-      </div>
-      <div class="pane about" data-pane="about" hidden>
-        <p>Memory replies use a kNN-LM (Khandelwal et al., 2020). Weights replies use one LoRA adapter per person (Hu et al., 2021) on the attention layers. Both run on <span id="modelName">a language model</span>.</p>
-        <p>Attribution graphs by circuit-tracer (Hanna, Piotrowski, Lindsey &amp; Ameisen, 2025; MIT license), following the circuit tracing method of Ameisen et al. (2025). The graph viewer is circuit-tracer's frontend, from the same family as Neuronpedia's; Neuronpedia integration by Decode Research. Graphs explain a replacement model built from transcoders, including error terms they can't account for, not the model itself.</p>
-      </div>
-    </aside>
+    <p class="as mono" id="asLine" hidden>writing as <span id="asName"></span> · <button type="button" id="change">change</button></p>
+    <p class="err" id="sendErr" role="alert"></p>
   </div>
 </div>
 
+<aside class="side" id="side" aria-label="Details" aria-hidden="true">
+  <div class="side-top"><span class="mono" id="sideTitle">word</span><button class="close" id="sideClose" type="button" aria-label="Close">✕</button></div>
+  <div class="body" id="sideBody"></div>
+</aside>
+
 <script>
 const INKS = ["#6EC6FF","#FF8FC7","#7EE0A1","#FFD166","#B39DFF","#FFA06B","#5FD3D0","#FF7A85"];
-const SUGGESTS = [
-  ["question", "What is the best way to learn a new language?"],
-  ["claim", "The only real way to learn a language is to move abroad."],
-  ["question", "Can you see the Great Wall of China from the Moon?"],
-  ["claim", "The Great Wall of China is easy to see from the Moon."],
-];
-const WORD_MS = 26;
 const $ = id => document.getElementById(id);
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
-let S = null, colors = {}, answers = [], current = null, traceTimers = {}, busy = false, lastMsg = "", turnNo = 0;
-
+let S = null, V = 262145, busy = false, lastMsg = "", traceTimer = null;
+const inks = {};
 const store = {
   get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } },
   set(k,v){ try{ localStorage.setItem(k,v) }catch(e){} }
 };
-
-function color(u){
-  if (u === "parametric") return "var(--graphite)";
-  if (!colors[u]) colors[u] = INKS[Object.keys(colors).length % INKS.length];
-  return colors[u];
-}
-function label(u){ return u === "parametric" ? "The model itself" : u }
-const pct = x => (x*100 >= 10 || x === 0 ? Math.round(x*100) : (x*100).toFixed(1)) + "%";
-const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const show = s => s.replace(/\n/g, "⏎");
-const pad3 = n => String(n).padStart(3, "0");
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-function el(html){ const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild }
+const ink = u => u === "parametric" ? "var(--graphite)" : (inks[u] = inks[u] || INKS[Object.keys(inks).length % INKS.length]);
+const label = u => u === "parametric" ? "The model itself" : u;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const show = s => esc((s.trim() || s).replace(/\n/g, "⏎"));
+const pct = x => (x * 100 >= 10 || x === 0 ? Math.round(x * 100) : (x * 100).toFixed(1)) + "%";
+const bits = p => -Math.log2(Math.max(p, 1e-300));
+const fmt = b => (b >= 100 ? Math.round(b) : b.toFixed(1)) + " bits";
+const babel = () => document.body.classList.contains("babel");
 
 async function api(path, opts={}){
   const r = await fetch(path, {headers:{"Content-Type":"application/json"}, ...opts});
-  const j = await r.json().catch(()=>({}));
+  const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(typeof j.detail === "string" ? j.detail : "The server returned an error (" + r.status + ").");
   return j;
 }
 
-// ---------- side panel ----------
-function tab(name){
-  document.querySelectorAll(".tabs [data-tab]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
-  document.querySelectorAll(".pane").forEach(p => p.hidden = p.dataset.pane !== name);
-}
-function openPanel(name){ tab(name); $("panel").classList.add("open") }
-document.querySelectorAll(".tabs [data-tab]").forEach(b => b.onclick = () => tab(b.dataset.tab));
-document.querySelectorAll("[data-open]").forEach(b => b.onclick = () => openPanel(b.dataset.open));
-$("closePanel").onclick = () => $("panel").classList.remove("open");
-
-// ---------- stream & forgetting ----------
-function renderState(){
-  $("modelName").textContent = S.model;
-  if ($("streamCount")) $("streamCount").textContent = pad3(S.entries.length);
-  S.entries.forEach(e => color(e.user_id));
-  const ul = $("entries"); ul.innerHTML = "";
-  if (!S.entries.length) ul.innerHTML = `<li style="--c:var(--line)"><span class="meta">Nothing yet. The model only knows its own training.</span></li>`;
-  [...S.entries].reverse().forEach(e => {
-    const li = document.createElement("li"); li.style.setProperty("--c", color(e.user_id));
-    const tr = e.training;
-    const trText = !tr ? "" : tr.loss_start == null ? "In memory and in weights." :
-      `In memory. ${tr.retrained ? "Weights retrained after a removal" : "Weights trained"}: ${tr.steps} steps, loss ${tr.loss_start.toFixed(2)} to ${tr.loss_end.toFixed(2)}${tr.seconds ? `, ${Math.round(tr.seconds)} s` : ""}.`;
-    li.innerHTML = `<span class="src">${esc(e.user_id)}</span><p class="text">${esc(e.text)}</p><span class="train">${esc(trText)}</span><button class="linkbtn">Remove</button>`;
-    li.querySelector("button").onclick = async () => {
-      if (!confirm(`Remove this message by ${e.user_id}? Memory forgets it instantly. Weights can't subtract it, so ${e.user_id}'s adapter is retrained from scratch on what's left.`)) return;
-      li.querySelector("button").textContent = "Removing and retraining…";
-      try{ S = await api("/api/entries/" + e.entry_id, {method:"DELETE"}); renderState() }catch(err){ $("streamErr").textContent = err.message }
-    };
-    ul.appendChild(li);
-  });
-  renderForget();
+// ---------- one word of a memory reply, from the server's step ----------
+function fromApi(s){
+  const votes = {};
+  s.neighbors.forEach(n => { if (n.weight > 0){ const v = votes[n.value_id] = votes[n.value_id] || {}; v[n.user_id] = (v[n.user_id] || 0) + n.weight } });
+  const pusher = id => { const v = votes[id]; return v ? Object.entries(v).sort((a,b) => b[1]-a[1])[0][0] : null };
+  const lm = s.lm_top5[0];
+  return {t: s.text, p: s.p_final, plm: s.p_lm, open: s.open95, sh: s.shares,
+    doors: s.final_top5.filter(d => d.id !== s.token_id).slice(0, 3).map(d => [d.text, d.p, pusher(d.id)]),
+    alone: lm.id !== s.token_id ? lm.text : null, weak: s.weak_match, near: (s.nearest_d2_over_temp || 0).toFixed(1),
+    cf: Object.fromEntries(Object.entries(s.counterfactual || {}).map(([u, c]) => [u, [c.p_chosen, c.top_text, c.flips]])),
+    nb: s.neighbors.map(n => ({u: n.user_id, v: n.value_text, b: n.context_before.slice(-90), a: n.context_after.slice(0, 40),
+      w: n.weight, ok: n.supports_chosen, f: n.filtered})),
+    lm5: s.lm_top5.map(x => [x.text, x.p]), fin5: s.final_top5.map(x => [x.text, x.p])};
 }
 
-function renderForget(){
-  const H = S.history, box = $("forget");
-  if (!H.length){ box.innerHTML = ""; return }
-  const last = H[H.length-1];
-  const ys = H.map(h => h.mean_drop), lo = Math.min(0, ...ys), hi = Math.max(0.01, ...ys);
-  const W = 300, Ht = 84, pad = 6;
-  const X = i => H.length === 1 ? W/2 : pad + i*(W-2*pad)/(H.length-1);
-  const Y = v => Ht - pad - (v-lo)/(hi-lo)*(Ht-2*pad);
-  const pts = H.map((h,i) => `${X(i)},${Y(h.mean_drop)}`).join(" ");
-  const conf = lp => pct(Math.exp(lp));
-  const worst = [...last.probes].sort((a,b) => (b.base-b.now) - (a.base-a.now)).slice(0,4);
-  box.innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Average drop in confidence on check questions, after each change">
-      <line class="axis" x1="0" x2="${W}" y1="${Y(0)}" y2="${Y(0)}"/>
-      <polyline class="line" points="${pts}"/>${H.map((h,i)=>`<rect class="dot" width="5" height="5" x="${X(i)-2.5}" y="${Y(h.mean_drop)-2.5}"><title>${esc(h.event)}</title></rect>`).join("")}</svg>
-    <p class="meta">Average confidence lost per word of the correct answer, across ${last.probes.length} check questions, after each of ${H.length} changes. Flat at zero means nothing forgotten.</p>
-    <ol>${worst.map(p => `<li>${esc(p.q)}<br><span class="meta">Average per-word confidence in “${esc(p.a)}”: <span class="num">${conf(p.base)}</span> before anyone wrote, <span class="num">${conf(p.now)}</span> now.</span></li>`).join("")}</ol>`;
+const peopleOf = sh => Object.entries(sh).filter(([u]) => u !== "parametric").sort((a,b) => b[1]-a[1]);
+const peopleShare = s => peopleOf(s.sh).reduce((t,[,v]) => t+v, 0);
+const isFork = s => s.alone != null && peopleOf(s.sh).length > 0;
+// A word people influenced: a visible share of its probability came from them, or their words turned the path here.
+const influenced = s => peopleShare(s) >= 0.05 || isFork(s);
+
+// Walls: solid where only one word was really possible; broken into openings as more words were open
+// (log scale, fully broken at 100 or more). Babel, where every word is open, is the "Babel-space" view.
+function wall(open){
+  const g = open <= 1 ? 0 : 0.18 + 0.67 * Math.min(1, Math.log(open) / Math.log(100)), dash = (8 * (1 - g)).toFixed(1);
+  return g ? `repeating-linear-gradient(to right, var(--ink) 0 ${dash}px, transparent ${dash}px 8px)` : "var(--ink)";
+}
+function mark(s){
+  // A highlighter stroke in the ink of whoever's words carried most of this word, stronger the bigger the people's share.
+  const share = peopleShare(s);
+  return share < 0.05 ? "transparent" : `color-mix(in srgb, ${ink(peopleOf(s.sh)[0][0])} ${Math.round(25 + 60 * share)}%, transparent)`;
+}
+function noise(word, seed){ let s = seed * 7919 + 17, o = ""; for (const ch of word){ s = (s * 48271) % 2147483647; o += /\s/.test(ch) ? ch : "abcdefghijklmnopqrstuvwxyz,. "[s % 29] } return o }
+// Replies use markdown; show it as plain prose: drop bold markers, turn list stars into bullets.
+const plain = part => part.replace(/\*\*/g, "").replace(/^(\s*)\*(\s)/, "$1•$2");
+
+// ---------- pieces both inspectors use ----------
+const sharesSorted = s => Object.entries(s.sh).sort((a,b) => a[0] === "parametric" ? -1 : b[0] === "parametric" ? 1 : b[1]-a[1]);
+const bar = s => `<div class="bar">${sharesSorted(s).map(([u,v]) => `<span style="--c:${ink(u)};flex:${v}" title="${esc(label(u))} ${pct(v)}"></span>`).join("")}</div>`;
+const shareRows = rows => `<ul class="shares">${rows.map(([u,v]) => `<li><span><span class="sw" style="--c:${ink(u)}"></span>${esc(label(u))}</span><span>${pct(v)}</span></li>`).join("")}</ul>`;
+function cfRows(s, n){
+  // "Without each person", most consequential first: anyone whose removal changes the word, then the biggest drop.
+  const rows = Object.entries(s.cf).map(([u, [pc, top, flips]]) => ({u, pc, top, flips, d: s.p - pc}))
+    .sort((a,b) => (b.flips - a.flips) || (b.d - a.d));
+  const shown = n ? rows.filter(r => r.flips || Math.abs(r.d) >= 0.005).slice(0, n) : rows;
+  if (!shown.length) return "";
+  return `<table><tr><th>Removed</th><th>This word</th><th>Would write</th></tr>${shown.map(r =>
+    `<tr><td><span class="sw" style="--c:${ink(r.u)}"></span>${esc(r.u)}</td><td>${pct(s.p)} to ${pct(r.pc)}</td><td class="${r.flips ? "flip" : ""}">${show(r.top)}${r.flips ? " (changes)" : ""}</td></tr>`).join("")}</table>`;
+}
+function turnRows(steps, i){
+  // The turn, side by side: a few words of context, then what the model alone would have said and what was said.
+  const s = steps[i], ctx = esc(plain(steps.slice(Math.max(0, i - 4), i).map(x => x.t).join("")).replace(/\n/g, " ").trimStart());
+  const people = peopleOf(s.sh), names = people.slice(0, 2).map(([u]) => esc(u)).join(" and ");
+  return `<div class="turn"><div class="row alone"><span class="mono">model alone</span><span><span class="ctx">…${ctx}</span><b>${esc(s.alone)}</b></span></div>
+    <div class="row took" style="--c:${ink(people[0][0])}"><span class="mono">with ${names}</span><span><span class="ctx">…${ctx}</span><b>${esc(s.t)}</b></span></div></div>`;
+}
+const chosenLine = s => `Chosen with probability ${pct(s.p)}, a price of ${fmt(bits(s.p))}. The model alone gave it ${pct(s.plm)}.`;
+function alternatives(s){
+  const alts = s.doors.filter(d => d[1] >= 0.02).map(d => `“${show(d[0])}”`);
+  return s.open <= 1 || !alts.length ? "No other word was really possible here."
+    : `It could also have been ${alts.length > 1 ? alts.slice(0, -1).join(", ") + " or " + alts[alts.length-1] : alts[0]}${s.open - 1 > alts.length ? `, among ${s.open - 1} other words` : ""}.`;
 }
 
-// ---------- replies ----------
-function stripFor(step){
-  const parts = Object.entries(step.shares).sort((a,b) => (a[0]==="parametric") ? -1 : (b[0]==="parametric") ? 1 : b[1]-a[1]);
-  let at = 0; const stops = [];
-  for (const [u,v] of parts){ const c = color(u); stops.push(`${c} ${at*100}% ${(at+v)*100}%`); at += v }
-  return `linear-gradient(to right, ${stops.join(",")})`;
-}
-function blurFor(step, users){
-  // Weights can't be split by person: the lifted part is drawn as all contributors' inks interleaved.
-  const inks = users.length ? users.map(color) : ["var(--graphite)"];
-  const stripes = inks.map((c,i) => `${c} ${i*4}px ${(i+1)*4}px`).join(",");
-  const lift = Math.round(step.lift*100);
-  return `repeating-linear-gradient(90deg, ${stripes}) right bottom / ${lift}% 4px no-repeat, linear-gradient(var(--graphite), var(--graphite)) left bottom / 100% 4px no-repeat`;
-}
-
-function tokens(steps, onTap, styleFn, labelFn, weakFn){
-  const prose = document.createElement("p"); prose.className = "prose";
-  steps.forEach((s, i) => {
-    const m = s.text.match(/^(\s*)([\s\S]*)$/);
-    if (m[1]) prose.append(...m[1].split("\n").flatMap((p,j)=> j ? [document.createElement("br"), p] : [p]));
-    if (!m[2]) return;
-    const b = document.createElement("button"); b.className = "tok pending" + (weakFn && weakFn(s) ? " weak" : "");
-    b.textContent = m[2]; b.style.setProperty("--strip", styleFn(s));
-    b.setAttribute("aria-pressed","false"); b.setAttribute("aria-label", `${m[2]}: ${labelFn(s)}`);
-    b.onclick = () => onTap(i, b);
-    prose.appendChild(b);
-  });
-  if (!steps.length) prose.textContent = "(The model stopped without writing anything.)";
-  return prose;
+// ---------- hover card ----------
+function hoverCard(steps, i){
+  const s = steps[i];
+  if (!influenced(s)) return {simple: true, html: `<b>${show(s.t)}</b> is the model's own word. ${alternatives(s)} It cost ${fmt(bits(s.p))}. <span class="more">Click the word for more.</span>`};
+  // Like the inspector, but only the most influential: the model plus the top two people, and the three removals that matter most.
+  const rows = sharesSorted(s), top = rows.slice(0, 3), rest = rows.length - top.length, cf = cfRows(s, 3);
+  return {simple: false, html: `<p class="lbl">${isFork(s) ? "the path turned here" : "from memory"}</p>
+    <p class="big">${show(s.t)}</p>
+    ${isFork(s) ? turnRows(steps, i) : `<p class="meta">${chosenLine(s)}</p>`}
+    ${bar(s)}${shareRows(top)}${rest > 0 ? `<p class="meta">and ${rest} more</p>` : ""}
+    ${cf ? `<p class="sec">without each person</p>${cf}` : ""}
+    <p class="hint">Click the word for the full breakdown.</p>`};
 }
 
-async function reveal(prose){
-  for (const b of prose.querySelectorAll(".tok.pending")){
-    b.classList.remove("pending");
-    if (!reduceMotion.matches){ follow(); await sleep(WORD_MS) }
-  }
-  follow();
+// ---------- sidebar ----------
+const side = $("side");
+function openSide(title, html){ $("sideTitle").textContent = title; $("sideBody").innerHTML = html; $("sideBody").scrollTop = 0; side.classList.add("open"); side.setAttribute("aria-hidden", "false") }
+function closeSide(){ side.classList.remove("open"); side.setAttribute("aria-hidden", "true"); clearInterval(traceTimer); document.querySelectorAll(".w.picked").forEach(w => w.classList.remove("picked")) }
+$("sideClose").onclick = closeSide;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSide() });
+
+function wordSide(a, steps, i){
+  const s = steps[i], others = peopleOf(s.sh).filter(([u]) => u !== a.user_id);
+  let h = `<p class="lbl">${isFork(s) ? "from memory · the path turned here" : "from memory"}</p><p class="big">${show(s.t)}</p>
+    <p class="meta">${chosenLine(s)} ${s.open} word${s.open === 1 ? "" : "s"} held 95% of the odds here.</p>
+    ${isFork(s) ? `<div style="margin-top:10px">${turnRows(steps, i)}</div>` : ""}
+    ${bar(s)}${shareRows(sharesSorted(s))}
+    <p class="meta" style="margin-top:6px">These shares are exact: the word's probability is a sum of the model's part and each stored text's part.</p>`;
+  if (others.length) h += `<p class="flag quiet">Found by <b>${esc(a.user_id)}</b>: their question is what pulled ${others.map(([u]) => esc(u) + "'s").join(", ")} words off the shelf here.</p>`;
+  if (s.weak) h += `<p class="flag">The closest stored text was far from this context (${s.near}× the typical distance). Retrieval matches by similarity, not by truth.</p>`;
+  h += `<p class="sec">without each person</p>${cfRows(s, 0) || `<p class="meta">No one's removal changes this word.</p>`}<p class="meta">Same sentence so far, that person's texts removed, the rest re-searched.</p>`;
+  h += `<p class="sec">stored texts it matched</p>${s.nb.length ? `<ul class="nb">${s.nb.map(n => {
+    const tag = n.ok ? "Pointed to this word" : n.f ? `Pointed to “${show(n.v)}”, ruled out: the model alone didn't find it fluent here` : `Pointed to “${show(n.v)}” instead`;
+    return `<li class="${n.ok ? "" : "other"}" style="--c:${ink(n.u)}"><span class="src">${esc(n.u)}</span><br>…${esc(n.b)}<mark>${esc(n.v)}</mark>${esc(n.a)}…<br><span class="meta">${tag}. Weight ${pct(n.w)}.</span></li>` }).join("")}</ul>` : `<p class="meta">The stream is empty.</p>`}`;
+  h += `<p class="sec">top choices</p><table><tr><th>Model alone</th><th>With the stream</th></tr>${s.lm5.map((x, j) =>
+    `<tr><td>${show(x[0])} <span class="meta">${pct(x[1])}</span></td><td>${show(s.fin5[j][0])} <span class="meta">${pct(s.fin5[j][1])}</span></td></tr>`).join("")}</table>`;
+  if (S && S.trace_available) h += `<p class="sec">inside the model</p><p class="meta">An attribution graph shows which internal features led the untouched model toward this word. It covers the model's share only. It takes several minutes on a laptop.</p><div id="traceBox" style="margin-top:8px"><button class="btn" type="button" id="traceGo">Build the graph</button></div>`;
+  openSide("word", h);
+  const go = $("traceGo"); if (go) go.onclick = () => startTrace(a.query_id, i);
 }
 
-function regenButtons(a, mode, users, out){
-  const alts = document.createElement("div"); alts.className = "alts";
-  const mk = (text, body, title) => { const b = document.createElement("button"); b.className = "btn"; b.textContent = text;
-    b.onclick = async () => { b.disabled = true; try{ const r = await api("/api/regenerate",{method:"POST",body:JSON.stringify({query_id:a.query_id, mode, ...body})});
-      out.insertAdjacentHTML("beforeend", `<div class="regen"><small>${esc(title)}</small>${esc(r.text || "(nothing)")}</div>`) }catch(e){ out.insertAdjacentHTML("beforeend", `<p class="err">${esc(e.message)}</p>`) } b.disabled = false };
-    alts.appendChild(b) };
-  mk("Model alone", {base_only:true}, mode === "memory" ? "Memory: the model alone, no stream" : "Weights: every adapter switched off");
-  users.forEach(u => mk(`Without ${u}`, {exclude_users:[u]}, mode === "memory" ? `Memory without ${u}'s words (stream as it is now)` : `Weights with ${u}'s adapter off (adapters as they are now)`));
-  return alts;
-}
-
-function renderReplies(a){
-  const mem = document.createElement("div"); mem.className = "reply";
-  const memProse = tokens(a.memory.steps, (i,b) => inspectMemory(a,i,b), s => `${stripFor(s)} left bottom/100% 4px no-repeat`,
-    s => `${pct(s.knn_share)} from the stream`, s => s.weak_match);
-  mem.appendChild(memProse);
-  const used = new Set(["parametric"]); a.memory.steps.forEach(s => Object.keys(s.shares).forEach(u => used.add(u)));
-  mem.insertAdjacentHTML("beforeend", `<div class="legend">${[...used].map(u => `<span><span class="sw" style="--c:${color(u)}"></span>${esc(label(u))}</span>`).join("")}<span><span class="sw" style="--c:transparent;border-bottom:2px dotted var(--far)"></span>Far match</span></div>`);
-  const mOut = document.createElement("div"); mem.append(regenButtons(a, "memory", a.memory.users_at_time, mOut), mOut);
-
-  // The weights reply stays hidden until asked for; it streams in the first time it's opened.
-  const wts = document.createElement("div"); wts.className = "reply weights"; wts.hidden = true;
-  const ad = a.weights.adapters_at_time;
-  const toggle = document.createElement("button"); toggle.type = "button"; toggle.className = "btn more";
-  toggle.textContent = "show reply from weights"; toggle.setAttribute("aria-expanded", "false");
-  let revealed = false;
-  toggle.onclick = () => {
-    wts.hidden = !wts.hidden;
-    toggle.textContent = (wts.hidden ? "show" : "hide") + " reply from weights";
-    toggle.setAttribute("aria-expanded", String(!wts.hidden));
-    if (!wts.hidden && !revealed){ revealed = true; stick = true; reveal(wProse) }
-  };
-  wts.innerHTML = `<p class="lbl"><b>weights</b><span class="m">${ad.length ? `${ad.length} adapter${ad.length>1?"s":""} on · influence mixed, only estimable` : "no one has written yet · untouched model"}</span></p>`;
-  const wProse = tokens(a.weights.steps, (i,b) => inspectWeights(a,i,b), s => blurFor(s, ad), s => `${pct(s.lift)} beyond what the untouched model gave`);
-  wts.appendChild(wProse);
-  wts.insertAdjacentHTML("beforeend", `<div class="legend"><span><span class="sw" style="--c:var(--graphite)"></span>What the untouched model would give</span><span><span class="sw" style="background:repeating-linear-gradient(90deg, ${(ad.length?ad.map(color):["var(--graphite)"]).map((c,i)=>`${c} ${i*3}px ${(i+1)*3}px`).join(",")})"></span>Added by training, everyone mixed</span></div>`);
-  const wOut = document.createElement("div"); wts.append(regenButtons(a, "weights", ad, wOut), wOut);
-
-  return {nodes:[mem, toggle, wts], proses:[memProse]};
-}
-
-// ---------- inspector ----------
-function press(btn){
-  document.querySelectorAll(".tok[aria-pressed=true]").forEach(x => x.setAttribute("aria-pressed","false"));
-  btn.setAttribute("aria-pressed","true");
-  openPanel("word");
-}
-
-function inspectMemory(a, i, btn){
-  press(btn); current = {a, i, mode:"memory"};
-  const s = a.memory.steps[i];
-  const parts = Object.entries(s.shares).sort((x,y)=> (x[0]==="parametric") ? -1 : (y[0]==="parametric") ? 1 : y[1]-x[1]);
-  let h = `<p class="lbl">from memory</p><p class="big">${esc(show(s.text.trim() || s.text))}</p>
-    <p class="meta">Chosen with probability <span class="num">${pct(s.p_final)}</span>. The model alone gave it <span class="num">${pct(s.p_lm)}</span>.</p>
-    <div class="bar">${parts.map(([u,v]) => `<span style="--c:${color(u)};flex:${v}" title="${esc(label(u))} ${pct(v)}"></span>`).join("")}</div>
-    <ul class="shares">${parts.map(([u,v]) => `<li><span><span class="sw" style="--c:${color(u)}"></span>${esc(label(u))}</span><span class="num">${pct(v)}</span></li>`).join("")}</ul>
-    <p class="meta">These shares are exact: the word's probability is a sum of the model's part and each stored text's part.</p>`;
-  if (s.weak_match) h += `<p class="flag">The closest stored text was far from this context (${s.nearest_d2_over_temp.toFixed(1)}× the typical distance). Retrieval still pushed its words in. It matches by similarity, not by truth.</p>`;
-  const cf = Object.entries(s.counterfactual);
-  if (cf.length){
-    h += `<h3>without each person</h3><table><tr><th>Removed</th><th>This word</th><th>Would write</th></tr>` +
-      cf.map(([u,c]) => `<tr><td><span class="sw" style="--c:${color(u)}"></span>${esc(u)}</td><td class="num">${pct(s.p_final)} to ${pct(c.p_chosen)}</td><td class="${c.flips ? "cf-flip" : ""}">${esc(show(c.top_text))}${c.flips ? " (changes)" : ""}</td></tr>`).join("") +
-      `</table><p class="meta">Same sentence so far, that person's texts removed, the rest re-searched.</p>`;
-  }
-  h += `<h3>stored texts it matched</h3><ul class="nb">` + s.neighbors.map(n => {
-    const tag = n.supports_chosen ? "Pointed to this word" : `Pointed to “${esc(show(n.value_text.trim() || n.value_text))}” instead`;
-    return `<li class="${n.supports_chosen ? "" : "other"}" style="--c:${color(n.user_id)}"><span class="src">${esc(label(n.user_id))}</span>
-      <p class="ctx">…${esc(n.context_before)}<mark>${esc(n.value_text)}</mark>${esc(n.context_after)}…</p>
-      <span class="meta">${tag}. Weight <span class="num">${pct(n.weight)}</span>, distance ${n.d2_over_temp.toFixed(1)}× typical${n.d2_over_temp > S.weak_match_threshold ? ", far match" : ""}.</span></li>` }).join("") + `</ul>`;
-  h += topTable("Model alone", s.lm_top5, "With the stream", s.final_top5);
-  h += `<h3>inside the model</h3><p class="meta">An attribution graph shows which internal features led the untouched model toward this word. It covers only the model's share, not the stream's.</p><div id="traceBox"></div>`;
-  $("insp").innerHTML = h;
-  renderTrace(a, i);
-}
-
-function topTable(h1, l1, h2, l2){
-  return `<h3>top choices</h3><table><tr><th>${h1}</th><th>${h2}</th></tr>` +
-    l1.map((x,j) => `<tr><td>${esc(show(x.text))} <span class="meta num">${pct(x.p)}</span></td><td>${esc(show(l2[j].text))} <span class="meta num">${pct(l2[j].p)}</span></td></tr>`).join("") + `</table>`;
-}
-
-async function inspectWeights(a, i, btn){
-  press(btn); current = {a, i, mode:"weights"};
-  const s = a.weights.steps[i];
-  let h = `<p class="lbl">from weights</p><p class="big">${esc(show(s.text.trim() || s.text))}</p>
-    <p class="meta">Chosen with probability <span class="num">${pct(s.p_tuned)}</span>. The untouched model gave it <span class="num">${pct(s.p_base)}</span>.</p>
-    <p class="flag quiet">There is no exact split here. Training spread everyone's words through the same layers, and the adapters interact. All we can do is switch them off and watch what changes.</p>
-    <div id="cfBox"><p class="meta">Switching adapters off and on…</p></div>`;
-  h += topTable("Untouched model", s.base_top5, "With training", s.tuned_top5);
-  h += `<h3>inside the model</h3><p class="meta">No attribution graph for weights replies. The graph's transcoders were fit to the untouched model, so they don't describe the trained one.</p>`;
-  $("insp").innerHTML = h;
-  try{
-    const r = await api("/api/weights_counterfactual", {method:"POST", body:JSON.stringify({query_id:a.query_id, pos:i})});
-    if (!current || current.a !== a || current.i !== i || current.mode !== "weights") return;
-    const row = c => `<td class="num">${pct(c.p_chosen)}</td><td class="${c.flips ? "cf-flip" : ""}">${esc(show(c.top_text))}${c.flips ? " (changes)" : ""}</td>`;
-    let t = `<h3>switching adapters</h3><table><tr><th>Adapters on</th><th>This word</th><th>Would write</th></tr>
-      <tr><td>Everyone's</td>${row(r.all)}</tr><tr><td>None</td>${row(r.base)}</tr>`;
-    for (const [u, c] of Object.entries(r.per_user)){
-      t += `<tr><td><span class="sw" style="--c:${color(u)}"></span>All but ${esc(u)}</td>${row(c.without)}</tr>
-            <tr><td><span class="sw" style="--c:${color(u)}"></span>Only ${esc(u)}</td>${row(c.alone)}</tr>`;
-    }
-    t += `</table><p class="meta">If “all but” and “only” disagree about someone, their adapter's effect depends on the others. Adapters were trained in the order people wrote, each on top of the ones before.</p>`;
-    if (r.stale) t += `<p class="flag">The weights have changed since this reply was written, so these numbers describe the adapters as they are now.</p>`;
-    $("cfBox").innerHTML = t;
-  }catch(e){ $("cfBox").innerHTML = `<p class="err">${esc(e.message)}</p>` }
-}
-
-function renderTrace(a, i, job){
-  const box = $("traceBox"); if (!box || !current || current.a !== a || current.i !== i || current.mode !== "memory") return;
-  if (!S.trace_available){ box.innerHTML = `<p class="meta">Graphs aren't available because circuit-tracer didn't load. Check the server log.</p>`; return }
-  if (!job){ box.innerHTML = `<button class="btn" id="trBtn">Build the graph</button><p class="meta">Takes several minutes on a laptop. You can keep chatting.</p>`;
-    $("trBtn").onclick = () => startTrace(a, i); return }
+function traceState(job){
+  const box = $("traceBox"); if (!box) return;
   if (job.status === "done") box.innerHTML = `<a class="btn solid" href="${esc(job.url)}" target="_blank" rel="noopener">Open the graph</a>`;
-  else if (job.status === "error") box.innerHTML = `<p class="err">The graph failed: ${esc(job.error || "unknown error")}. Check the server log.</p>`;
-  else box.innerHTML = `<p class="meta">${job.status === "queued" ? `Waiting in line (position ${job.queue_position}).` : `Building since ${new Date(job.started*1000).toLocaleTimeString()}.`}</p>`;
+  else if (job.status === "error") box.innerHTML = `<p class="err">The graph failed: ${esc(job.error || "unknown error")}.</p>`;
+  else box.innerHTML = `<p class="meta">${job.status === "queued" ? `Waiting in line (position ${job.queue_position}).` : `Building since ${new Date(job.started * 1000).toLocaleTimeString()}.`}</p>`;
 }
-
-async function startTrace(a, i){
+async function startTrace(qid, pos){
   try{
-    let job = await api("/api/trace", {method:"POST", body:JSON.stringify({query_id:a.query_id, pos:i})});
-    renderTrace(a, i, job);
-    clearInterval(traceTimers[job.slug]);
-    traceTimers[job.slug] = setInterval(async () => {
-      job = await api("/api/trace/" + job.slug); renderTrace(a, i, job);
-      if (job.status === "done" || job.status === "error") clearInterval(traceTimers[job.slug]);
+    let job = await api("/api/trace", {method:"POST", body:JSON.stringify({query_id:qid, pos})}); traceState(job);
+    clearInterval(traceTimer);
+    traceTimer = setInterval(async () => {
+      job = await api("/api/trace/" + job.slug); traceState(job);
+      if (job.status === "done" || job.status === "error") clearInterval(traceTimer);
     }, 4000);
   }catch(e){ $("traceBox").innerHTML = `<p class="err">${esc(e.message)}</p>` }
 }
 
-// ---------- scrolling: follow new content unless the reader scrolled up ----------
-const scroller = $("scroller");
-let stick = true, lastTop = 0;
-scroller.addEventListener("scroll", () => {
-  const top = scroller.scrollTop, gap = scroller.scrollHeight - top - scroller.clientHeight;
-  if (gap < 80) stick = true; else if (top < lastTop - 2) stick = false;
-  lastTop = top;
-}, {passive:true});
-function follow(){ if (stick) requestAnimationFrame(() => scroller.scrollTop = scroller.scrollHeight) }
+function exchangeSide(a){
+  const X = a.exchange, P = a.price;
+  const subs = Object.entries(P.subsidy).sort((x,y) => y[1]-x[1]);
+  const helped = subs.filter(([,v]) => v >= 0.05), hurt = subs.filter(([,v]) => v <= -0.05);
+  let h = `<p class="lbl">market prices</p><p class="big">${(X.bought / X.spent).toFixed(1)}× return</p>
+    <p class="meta">Your question cost <b>${fmt(X.spent)}</b> to reach. After it, this reply cost ${fmt(X.with)}; after an empty question, ${fmt(X.without)}. So it saved the reply <b>${fmt(X.bought)}</b>.</p>
+    <p class="meta" style="margin-top:8px">In Babel this reply costs ${fmt(X.babel)}, whatever you ask. A question is a short address that works because human writing has already made most of the trip cheap. Each bit halves the odds.</p>
+    <p class="sec">what your question cost</p>
+    <table><tr><td>In Babel, every word equally likely</td><td>${fmt(P.babel)}</td></tr><tr><td>The model alone</td><td>${fmt(P.alone)}</td></tr>
+      <tr><td>With the stream</td><td>${fmt(P.stream)}</td></tr><tr><td>With everyone's training</td><td>${fmt(P.weights)}</td></tr></table>
+    <p class="sec">who lowered the price</p>`;
+  h += helped.length ? `<ul class="shares">${helped.map(([u,v]) => `<li><span><span class="sw" style="--c:${ink(u)}"></span>${esc(u)}${u === a.user_id ? " (your own earlier words)" : ""}</span><span>saved ${fmt(v)}</span></li>`).join("")}</ul>`
+    : `<p class="meta">No one in the stream made your question cheaper.</p>`;
+  if (hurt.length) h += `<ul class="shares">${hurt.map(([u,v]) => `<li><span><span class="sw" style="--c:${ink(u)}"></span>${esc(u)}</span><span>added ${fmt(-v)}</span></li>`).join("")}</ul>`;
+  openSide("market prices", h);
+}
+
+// ---------- taking a moment away on a USB stick ----------
+async function momentSide(a){
+  openSide("take this moment", `<p class="lbl">take this moment with you</p>
+    <p class="meta">The stick won't hold the reply. It holds the reply's <b>address</b>: a few characters of the Library of Babel's alphabet that read back as exactly this reply, but only under the stream as it is right now. With the model alone, the same address reads as a different text. It also gets a copy of the stream and a page that opens offline on any computer.</p>
+    <p class="sec">plug in a USB stick</p><div id="vols"><p class="meta">Looking for drives…</p></div>
+    <p class="meta" style="margin-top:14px">No stick? <button class="linkbtn" type="button" id="dl">Download it instead</button></p>
+    <div id="mOut" style="margin-top:14px"></div>`);
+  const take = async volume => {
+    $("mOut").innerHTML = `<p class="meta live">finding this reply's address</p>`;
+    try{
+      const r = await api("/api/moment", {method:"POST", body:JSON.stringify({query_id:a.query_id, volume})});
+      $("mOut").innerHTML = `<p class="lbl">the address</p><p class="big" style="font-family:var(--mono);letter-spacing:.08em">${esc(r.address.replace(/ /g, "_"))}</p>
+        <p class="meta">${r.address.length} characters, where Babel would need all ${r.babel_chars}. With the model alone it reads: “${esc(r.readings.alone.slice(0, 160))}…”</p>
+        ${r.written_to ? `<p class="flag quiet">Written to <b>${esc(r.written_to)}</b>. Eject the stick before you pull it out.</p>` : ""}
+        <p class="meta" style="margin-top:8px"><a href="${r.download}">Download a copy</a></p>`;
+      if (volume === "") location.href = r.download;
+    }catch(e){ $("mOut").innerHTML = `<p class="err">${esc(e.message)}</p>` }
+  };
+  $("dl").onclick = () => take("");
+  const list = async () => {
+    try{
+      const vols = await api("/api/volumes");
+      if (!$("vols")) return;
+      $("vols").innerHTML = vols.length ? vols.map(v => `<button class="btn" type="button" data-v="${esc(v.name)}" style="margin:0 8px 8px 0">Write to ${esc(v.name)}</button>`).join("")
+        : `<p class="meta">No stick found yet. Plug one in; it'll appear here.</p>`;
+      $("vols").querySelectorAll("[data-v]").forEach(b => b.onclick = () => take(b.dataset.v));
+    }catch(e){ $("vols").innerHTML = `<p class="err">${esc(e.message)}</p>` }
+  };
+  await list();
+  // keep looking while the panel is open, so plugging a stick in shows it
+  const t = setInterval(() => { if (!side.classList.contains("open") || $("sideTitle").textContent !== "take this moment") clearInterval(t); else if (!$("mOut").textContent) list() }, 2500);
+}
+
+function streamSide(){
+  if (!S) return;
+  const list = [...S.entries].reverse();
+  openSide("stream", `<p class="meta">Everything people have said. Each message is stored in memory and trained into its author's part of the model. Removing one takes it out of memory at once and retrains that person's part from what's left.</p>
+    <p class="err" id="streamErr"></p>
+    <ul class="entries" style="margin-top:12px">${list.length ? list.map(e => `<li style="--c:${ink(e.user_id)}"><span class="src">${esc(e.user_id)}</span><p>${esc(e.text)}</p><button class="linkbtn" type="button" data-id="${e.entry_id}" data-who="${esc(e.user_id)}">Remove</button></li>`).join("")
+      : `<li style="--c:var(--hair)"><span class="meta">Nothing yet.</span></li>`}</ul>`);
+  $("sideBody").querySelectorAll("[data-id]").forEach(b => b.onclick = async () => {
+    if (!confirm(`Remove this message by ${b.dataset.who}? It leaves memory at once; their part of the model is retrained from what's left.`)) return;
+    b.textContent = "Removing and retraining…"; b.disabled = true;
+    try{ S = await api("/api/entries/" + b.dataset.id, {method:"DELETE"}); streamSide() }catch(err){ $("streamErr").textContent = err.message; b.textContent = "Remove"; b.disabled = false }
+  });
+}
+$("streamBtn").onclick = streamSide;
+
+// ---------- a turn ----------
+function askBox(name, text){
+  const sec = document.createElement("section");
+  sec.innerHTML = `<div class="ask"><span class="who mono">${esc(name)}</span><br><p>${esc(text)}</p><span class="status mono live">replying</span></div>`;
+  return sec;
+}
+
+function renderReply(sec, a, n){
+  const steps = a.memory.steps.map(fromApi);
+  const reply = document.createElement("div"); reply.className = "reply";
+  const text = document.createElement("p"); text.className = "text fresh";
+  let k = 0;
+  steps.forEach((s, i) => {
+    s.t.split("\n").forEach((part, j) => {
+      if (j) text.appendChild(document.createElement("br"));
+      const shown = plain(part);
+      if (!shown) return;
+      if (!shown.trim()){ text.appendChild(document.createTextNode(shown)); return }   // indentation: no walls of its own
+      const w = document.createElement("span"); w.className = "w"; w.dataset.i = i;
+      w.dataset.word = shown; w.dataset.noise = noise(shown, n * 1000 + i);
+      w.textContent = babel() ? w.dataset.noise : shown;
+      w.style.setProperty("--wall", wall(s.open));
+      w.style.setProperty("--mark", mark(s));
+      w.style.setProperty("--k", k++);
+      w.tabIndex = 0;
+      if (j === 0 && isFork(s)){
+        const notch = document.createElement("i"); notch.className = "notch"; notch.style.setProperty("--c", ink(peopleOf(s.sh)[0][0]));
+        notch.setAttribute("aria-hidden", "true"); w.appendChild(notch); w.classList.add("fork");
+        w.setAttribute("aria-label", `${shown}: the path turned here`);
+      }
+      text.appendChild(w);
+    });
+  });
+  if (!k) text.textContent = "(The model stopped without writing anything.)";
+  const hc = document.createElement("div"); hc.className = "hc"; hc.setAttribute("role", "status");
+  reply.append(text, hc);
+
+  const focus = w => {
+    reply.querySelectorAll(".w.on").forEach(x => x.classList.remove("on"));
+    hc.classList.remove("show");
+    if (!w || babel()) return;
+    w.classList.add("on");
+    const {simple, html} = hoverCard(steps, +w.dataset.i);
+    hc.className = "hc" + (simple ? " simple" : ""); hc.innerHTML = html; hc.classList.add("show");
+    // Above the word, clear of its wall and notch; below it when there's no room above in the window.
+    const r = w.getBoundingClientRect(), R = reply.getBoundingClientRect(), h = hc.offsetHeight;
+    hc.style.left = Math.max(0, Math.min(r.left - R.left - 12, R.width - hc.offsetWidth)) + "px";
+    const top = $("main").getBoundingClientRect().top;
+    hc.style.top = (r.top - h - 26 > top ? r.top - R.top - h - 26 : r.bottom - R.top + 22) + "px";
+  };
+  const pick = w => {
+    if (babel()) return;
+    document.querySelectorAll(".w.picked").forEach(x => x.classList.remove("picked"));
+    w.classList.add("picked");
+    wordSide(a, steps, +w.dataset.i);
+  };
+  text.addEventListener("mouseover", e => { const w = e.target.closest(".w"); if (w) focus(w) });
+  text.addEventListener("focusin", e => { const w = e.target.closest(".w"); if (w) focus(w) });
+  text.addEventListener("click", e => { const w = e.target.closest(".w"); if (w){ focus(w); pick(w) } });
+  text.addEventListener("keydown", e => { const w = e.target.closest(".w"); if (w && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); pick(w) } });
+  reply.addEventListener("mouseleave", () => focus(null));
+
+  // foot: one plain sentence (who shaped it, what the question cost and bought), then the user-trained response
+  const foot = document.createElement("div"); foot.className = "foot";
+  const X = a.exchange;
+  const who = {}; steps.forEach(s => peopleOf(s.sh).forEach(([u,v]) => who[u] = (who[u] || 0) + v));
+  const shaped = Object.entries(who).sort((x,y) => y[1]-x[1]);
+  foot.innerHTML = `<p class="told">${shapedBy(shaped)}${X ? ` <button class="fare" type="button">${fareLine(X)}</button>` : ""}</p>
+    <button class="linkish" type="button">see fully user-trained response</button>`;
+  latest = a; $("takeBtn").hidden = false;
+  const adapters = a.weights.adapters_at_time;
+  const stripes = (adapters.length ? adapters : ["parametric"]).map((u,i) => `${ink(u)} ${i*4}px ${(i+1)*4}px`).join(",");
+  const crowd = document.createElement("div"); crowd.className = "crowd"; crowd.hidden = true;
+  crowd.innerHTML = `<span class="mono">fully user-trained response: ${adapters.length ? "everyone's training, averaged, so it can't be split by person" : "no one has written yet, so this is the untouched model"}</span><br><p style="--stripes:repeating-linear-gradient(90deg, ${stripes})">${esc(plain(a.weights.answer) || "(nothing)")}</p>`;
+  const hear = foot.querySelector(".linkish");
+  hear.onclick = () => { crowd.hidden = false; hear.remove() };
+  if (X) foot.querySelector(".fare").onclick = () => exchangeSide(a);
+  reply.append(foot, crowd);
+  sec.appendChild(reply);
+}
+
+// The cost of a reply, said in a sentence rather than drawn as a dashboard.
+const nameList = names => names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0];
+function shapedBy(shaped){
+  if (!shaped.length) return "No one's words here, only the model's.";
+  return `Shaped by ${nameList(shaped.map(([u]) => `<span class="nm" style="--c:${ink(u)}">${esc(u)}</span>`))}.`;
+}
+function fareLine(X){
+  const spent = Math.round(X.spent), got = Math.round(Math.abs(X.bought));
+  return `Your question cost ${spent} bits to ask, and made this reply ${got} bits ${X.bought >= 0 ? "easier" : "harder"} to find.`;
+}
+let latest = null;                                 // the newest reply, for "take this moment with you"
 
 // ---------- sending ----------
 // One message does both jobs: it is answered from the stream as it stands, then learned.
 // Answering first keeps the reply from simply echoing the message back.
+let turnNo = 0;
 async function send(text){
   const name = $("name").value.trim();
   $("sendErr").textContent = "";
-  if (!name){ $("sendErr").textContent = "Add your name first."; $("name").focus(); return false }
-  if (!$("consent").checked){ $("sendErr").textContent = "Tick the box to confirm your messages can be stored, trained on, and shown to others."; return false }
-  busy = true; autosize(); lastMsg = text;
+  if (!name){ showWho(); $("sendErr").textContent = "Add your name first."; $("name").focus(); return false }
+  if (!$("consent").checked){ showWho(); $("sendErr").textContent = "Tick the box to confirm your messages can be stored, trained on, and shown to others."; return false }
+  busy = true; autosize(); lastMsg = text; showAs();
   $("empty").hidden = true;
-
-  const user = el(`<article class="turn user"><p class="bubble" style="--c:${color(name)}"><span class="who">${esc(name)}</span>${esc(text)}</p><p class="status live">replying</p></article>`);
-  const status = user.querySelector(".status");
-  const setStatus = (msg, cls="") => { status.textContent = msg; status.className = "status " + cls };
-  const bot = el(`<article class="turn bot"><p class="who">reply · ${pad3(++turnNo)}</p><p class="wait mono live">writing</p></article>`);
-  $("log").append(user, bot); stick = true; follow();
-
+  const sec = askBox(name, text), status = sec.querySelector(".status");
+  const setStatus = (m, live) => { status.textContent = m; status.classList.toggle("live", !!live) };
+  const wait = document.createElement("p"); wait.className = "wait mono live"; wait.textContent = "writing";
+  sec.appendChild(wait);
+  $("log").appendChild(sec); sec.scrollIntoView({block:"start", behavior:"smooth"});
   try{
     const a = await api("/api/ask", {method:"POST", body:JSON.stringify({user_id:name, question:text})});
-    answers.push(a);
-    const {nodes, proses} = renderReplies(a);
-    bot.querySelector(".wait").replaceWith(...nodes);
-    setStatus("learning: storing in memory, training your adapter", "live");
-    for (const p of proses) await reveal(p);
+    wait.remove(); renderReply(sec, a, ++turnNo);
+    setStatus("learning: storing your words, training your part of the model", true);
   }catch(e){
-    bot.remove(); turnNo--;
-    setStatus("no reply: " + e.message, "bad");
+    wait.remove(); setStatus("no reply: " + e.message);
     busy = false; autosize(); return true;
   }
   try{
     S = await api("/api/ingest", {method:"POST", body:JSON.stringify({user_id:name, text, consent:true})});
-    renderState();
+    S.entries.forEach(e => ink(e.user_id));
     const tr = S.entries.find(e => e.entry_id === S.entry_id)?.training;
-    setStatus(tr && tr.loss_start != null
-      ? `learned · ${tr.steps} steps · loss ${tr.loss_start.toFixed(2)} → ${tr.loss_end.toFixed(2)}${tr.seconds ? ` · ${Math.round(tr.seconds)} s` : ""}`
-      : "learned · in memory and weights");
-  }catch(e){ setStatus("not learned: " + e.message, "bad") }
+    setStatus(tr && tr.loss_start != null ? `learned · ${tr.steps} steps · ${tr.seconds ? Math.round(tr.seconds) + " s" : ""}` : "learned");
+  }catch(e){ setStatus("not learned: " + e.message) }
   busy = false; autosize();
   return true;
 }
 
-// ---------- composer ----------
+// ---------- composer and identity ----------
 const msg = $("msg");
-function autosize(){
-  msg.style.height = "auto";
-  msg.style.height = Math.min(msg.scrollHeight, 160) + "px";
-  $("sendBtn").disabled = busy || !msg.value.trim();
+function autosize(){ msg.style.height = "auto"; msg.style.height = Math.min(msg.scrollHeight, 160) + "px"; $("sendBtn").disabled = busy || !msg.value.trim() }
+function showAs(){ if ($("name").value.trim() && $("consent").checked){ $("asName").textContent = $("name").value.trim(); $("asLine").hidden = false; $("whoRow").hidden = true } }
+function showWho(){ $("asLine").hidden = true; $("whoRow").hidden = false }
+$("change").onclick = () => { showWho(); $("name").focus() };
+$("takeBtn").onclick = () => { if (latest) momentSide(latest) };
+
+// ---------- speaking instead of typing ----------
+// The browser's own speech recognition: words appear in the box as you speak, and you can edit them before sending.
+// Chrome sends the audio to Google to transcribe, Safari to Apple; browsers without it simply don't show the mic.
+const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!Recognition) $("micBtn").hidden = true;
+else {
+  let rec = null;
+  const mic = $("micBtn");
+  const listening = on => { mic.setAttribute("aria-pressed", String(on)); mic.setAttribute("aria-label", on ? "Stop listening" : "Speak") };
+  mic.onclick = () => {
+    if (rec){ rec.stop(); return }
+    $("sendErr").textContent = "";
+    const before = msg.value.trim() ? msg.value.replace(/\s*$/, " ") : "";
+    rec = new Recognition();
+    rec.lang = navigator.language || "en-US";
+    rec.interimResults = true;
+    rec.continuous = true;
+    rec.onresult = e => { msg.value = before + [...e.results].map(r => r[0].transcript).join(""); autosize() };
+    rec.onerror = e => {
+      $("sendErr").textContent = e.error === "not-allowed" || e.error === "service-not-allowed"
+        ? "The microphone is blocked. Allow it for this page in the browser's site settings, then try again."
+        : e.error === "no-speech" ? "Didn't hear anything. Try again a little closer to the microphone."
+        : "Speech input stopped (" + e.error + "). You can type instead.";
+    };
+    rec.onend = () => { rec = null; listening(false); msg.focus() };
+    rec.start(); listening(true);
+  };
 }
 msg.addEventListener("input", autosize);
 msg.addEventListener("keydown", e => {
@@ -559,17 +590,46 @@ $("composer").onsubmit = async e => {
   msg.value = ""; autosize();
   if (!await send(text)){ msg.value = text; autosize() }
 };
-
-$("suggests").innerHTML = SUGGESTS.map(([src, q]) => `<button class="suggest" type="button"><span class="src">${src}</span>${esc(q)}</button>`).join("");
-$("suggests").querySelectorAll(".suggest").forEach((b, i) => b.onclick = () => { msg.value = SUGGESTS[i][1]; autosize(); msg.focus() });
-
 $("name").value = store.get("name") || "";
 $("name").addEventListener("input", e => store.set("name", e.target.value));
 $("consent").checked = store.get("consent") === "1";
 $("consent").addEventListener("change", e => store.set("consent", e.target.checked ? "1" : "0"));
+showAs();
 if (matchMedia("(pointer:fine)").matches) msg.focus();
 
-api("/api/state").then(s => { S = s; renderState() }).catch(() => { $("sendErr").textContent = "Can't reach the server. Is server.py running?" });
+// ---------- the walls ----------
+function babelLine(){
+  const n = Math.max(0, ...[...document.querySelectorAll(".text")].map(t => new Set([...t.querySelectorAll(".w")].map(w => w.dataset.i)).size));
+  return n ? `In Babel-space, every one of ${V.toLocaleString()} words is equally likely at each step. A reply of ${n} words becomes one of about 10<sup>${Math.round(n * Math.log10(V))}</sup> texts of its length, all equally likely, and none of them anyone's.`
+    : `In Babel-space, every one of ${V.toLocaleString()} words is equally likely at each step, and every reply becomes noise that belongs to no one.`;
+}
+$("walls").onclick = e => {
+  const on = !babel();
+  document.body.classList.toggle("babel", on);
+  e.currentTarget.setAttribute("aria-pressed", String(on));
+  document.querySelectorAll(".w").forEach(w => w.firstChild.nodeValue = on ? w.dataset.noise : w.dataset.word);
+  $("babelLine").hidden = !on; if (on) $("babelLine").innerHTML = babelLine();
+  document.querySelectorAll(".hc").forEach(h => h.classList.remove("show"));
+  closeSide();
+};
+
+api("/api/state").then(s => { S = s; V = s.vocab || V; s.entries.forEach(e => ink(e.user_id)) })
+  .catch(() => { $("sendErr").textContent = "Can't reach the server. Is server.py running?" });
+</script>
+<script type="module">
+// Design feedback: open the page with ?feedback to annotate the UI. "Send" saves to data/feedback.json for the next edit.
+// Off by default so people using the piece never see the toolbar. Needs internet (React and Agentation load from esm.sh).
+if (new URLSearchParams(location.search).has("feedback")){
+  const [{createElement}, {createRoot}, {Agentation}] = await Promise.all([import("react"), import("react-dom/client"), import("agentation")]);
+  const host = document.createElement("div"); host.id = "agentation-root"; document.body.appendChild(host);
+  createRoot(host).render(createElement(Agentation, {
+    appName: "whose-words",
+    onSubmit: async (output, annotations) => {
+      const r = await fetch("/api/feedback", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({output, annotations})});
+      if (!r.ok) throw new Error("The server didn't save the feedback.");
+    }
+  }));
+}
 </script>
 </body>
 </html>

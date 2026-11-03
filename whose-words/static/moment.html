@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>whose words? · a moment</title>
+<!-- A moment taken away on a USB stick: fully offline, nothing loads from the internet. -->
+<style>
+:root{
+  --bg:#FFFFFF; --ink:#000000; --soft:#5A5A5A; --faint:#8A8A8A; --hair:#D6D6D6; --hatch:#D0D0D0; --graphite:#8A8A8A; --far:#FF3B30;
+  --sans:system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+
+/* header: the name and the one big gesture */
+header{border-bottom:1px solid var(--ink);padding:12px 20px}
+.top{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:16px}
+.top h1{font-size:16px;font-weight:600;margin:0;flex:1}
+.walls-btn{border:1px solid var(--ink);background:none;padding:6px 12px;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.05em;white-space:nowrap}
+.walls-btn[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.babel-line{max-width:760px;margin:8px auto 0;font-size:13px;color:var(--soft)}
+
+main{flex:1;overflow-y:auto}
+.col{max-width:760px;margin:0 auto;padding:28px 20px 40px;display:flex;flex-direction:column;gap:40px}
+
+/* a turn: the question, then the reply drawn as a corridor */
+.ask{margin-left:auto;width:fit-content;max-width:80%;text-align:right;margin-bottom:30px}
+.ask .who{color:var(--faint)}
+.ask p{margin:2px 0 0;font-size:17px;padding:8px 12px;border:1px solid var(--ink);display:inline-block;text-align:left}
+
+.reply{position:relative}
+.text{font-size:21px;line-height:2.85;margin:0;padding:0 2px}
+/* one token, with a highlighter stroke in the ink of whoever's words carried it */
+.w{display:inline-block;position:relative;white-space:pre;line-height:1.25;cursor:pointer;--h:14px;
+   background-image:linear-gradient(transparent 52%, var(--mark, transparent) 52%, var(--mark, transparent) 92%, transparent 92%)}
+/* walls sit at an even distance on every line; where other words were open, the wall breaks into openings */
+.w::before,.w::after{content:"";position:absolute;left:0;right:0;height:1px;background:var(--wall, var(--ink));transition:transform .5s ease, opacity .4s}
+.w::before{top:calc(-1 * var(--h))}
+.w::after{bottom:calc(-1 * var(--h))}
+.w:hover,.w.on{background-color:#F0F0F0}
+.w.picked{outline:1px solid var(--ink);outline-offset:2px}
+/* a fork: someone's words turned the path here. A notch cut through the top wall, in their ink. */
+.w .notch{position:absolute;left:-1px;top:calc(-1 * var(--h) - 9px);width:3px;height:calc(var(--h) + 9px);background:var(--c)}
+.w .notch::after{content:"";position:absolute;left:-3px;top:-6px;border:4.5px solid transparent;border-top:6px solid var(--c)}
+
+
+/* shared inspector pieces: the hover card and the sidebar use the same parts */
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--faint);margin:0 0 4px}
+.big{font-size:28px;font-weight:600;line-height:1.1;margin:0 0 6px;letter-spacing:-.01em;white-space:pre-wrap;word-break:break-word}
+.meta{font-size:13px;color:var(--soft);margin:0}
+.bar{display:flex;height:10px;margin:10px 0 6px;outline:1px solid var(--ink)}
+.bar span{background:var(--c);min-width:2px}
+.shares{list-style:none;padding:0;margin:0;font-size:14px}
+.shares li{display:flex;justify-content:space-between;gap:12px;padding:1px 0}
+.sw{display:inline-block;width:14px;height:4px;background:var(--c);vertical-align:middle;margin-right:6px;outline:1px solid var(--ink)}
+.sec{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--faint);margin:14px 0 4px;font-weight:400}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+td,th{text-align:left;padding:2px 8px 2px 0;vertical-align:top}
+th{font-weight:400;color:var(--faint)}
+.flip{font-weight:600}
+.turn .row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;font-size:14px}
+.turn .ctx{color:var(--faint)}
+.turn .alone b{font-weight:600;text-decoration:line-through;text-decoration-thickness:1px;color:var(--soft)}
+.turn .took b{font-weight:600;background:linear-gradient(transparent 55%, color-mix(in srgb, var(--c) 70%, transparent) 55%)}
+.flag{font-size:13px;margin:10px 0 0;padding:7px 9px;border:1px solid var(--ink)}
+
+/* the hover card: above the word in focus, transparent to the mouse so it never blocks words under it */
+.hc{position:absolute;z-index:3;display:none;pointer-events:none;padding:11px 13px 12px;background:var(--bg);border:1px solid var(--ink);
+    width:330px;max-width:92%;color:var(--soft)}
+.hc.show{display:block}
+.hc.simple{width:max-content;max-width:min(380px, 92%);font-size:14px;padding:9px 12px 10px}
+.hc.simple b{color:var(--ink);font-weight:600}
+.hc .hint{font-size:12px;color:var(--faint);margin:10px 0 0}
+.hc .more{font-size:12px;color:var(--faint)}
+
+/* the sidebar: hidden until a word is clicked */
+.side{position:fixed;top:0;right:0;bottom:0;width:min(400px, 100%);background:var(--bg);border-left:1px solid var(--ink);z-index:10;
+      transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column}
+.side.open{transform:none}
+.side .bar-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--ink);padding:10px 14px}
+.side .close{background:none;border:1px solid var(--ink);width:30px;height:30px;cursor:pointer}
+.side .body{overflow-y:auto;padding:16px;flex:1}
+.nb{list-style:none;padding:0;margin:0}
+.nb li{padding:7px 0 7px 12px;border-top:1px solid var(--hair);position:relative;font-size:13.5px}
+.nb li::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;background:var(--c)}
+.nb li.other{opacity:.6}
+.nb .src{font-weight:600;font-size:13px}
+.nb mark{background:color-mix(in srgb, var(--c) 40%, transparent);color:inherit}
+
+/* under each reply: the fare, who shaped it, the crowd */
+.foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:16px;font-size:13px;color:var(--soft)}
+.told{margin:0;font-size:15px;line-height:1.6;color:var(--soft);max-width:62ch;flex-basis:100%}
+.told .nm{color:var(--ink);background:linear-gradient(transparent 58%, color-mix(in srgb, var(--c) 60%, transparent) 58%)}
+.fare{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.fare:hover{color:var(--ink)}
+.linkish{background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;color:var(--soft);font-size:13px}
+.crowd{margin-top:14px;padding:10px 0 0 12px;border-left:2px solid var(--hair)}
+.crowd p{margin:4px 0 0;font-size:17px;line-height:1.7;color:var(--soft);padding-bottom:2px;
+  background:var(--stripes) left bottom / 100% 2px no-repeat;display:inline}
+.crowd[hidden]{display:none}
+
+/* Babel: the walls open, the measure lifts, and the reply dissolves into one of all possible texts */
+body.babel .text{background:repeating-linear-gradient(45deg, var(--hatch) 0 1px, transparent 1px 7px)}
+body.babel .w::before{transform:translateY(-18px);opacity:0}
+body.babel .w::after{transform:translateY(18px);opacity:0}
+body.babel .w{background-image:none;color:var(--faint)}
+body.babel .notch{display:none}
+
+/* the moment: the address and its readings */
+.moment{border-bottom:1px solid var(--ink);padding-bottom:28px}
+.moment .mono{margin:0}
+.addr{font-family:var(--mono);font-size:56px;font-weight:700;letter-spacing:.08em;margin:2px 0 6px;line-height:1.1;word-break:break-all}
+.addr.small{font-size:22px;margin:4px 0 0}
+.readings{display:grid;gap:16px;margin:18px 0}
+.readings > div{border-left:2px solid var(--ink);padding:2px 0 2px 12px}
+.readings p{margin:4px 0 0;font-size:16px;line-height:1.6}
+.readings .diverge{font-weight:400;background:color-mix(in srgb, var(--hatch) 60%, transparent)}
+
+/* composer */
+.dock{border-top:1px solid var(--ink);padding:12px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+.dock .inner{max-width:760px;margin:0 auto}
+.composer{display:flex;border:1px solid var(--ink)}
+.composer textarea{flex:1;border:0;resize:none;padding:11px 12px;min-height:46px;font:inherit;outline:none}
+.composer button{width:46px;border:0;border-left:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.as{margin-top:6px;color:var(--faint)}
+.note{max-width:760px;margin:0 auto;color:var(--faint);font-size:12px;padding:0 20px 8px}
+
+@media (max-width: 600px){
+  .text{font-size:19px;line-height:2.7}
+  .ask{max-width:92%}
+}
+@media (prefers-reduced-motion: reduce){ .w::before,.w::after,.side{transition:none} }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>whose words? · a moment</h1>
+    <button class="walls-btn" id="walls" type="button" aria-pressed="false">Babel-space</button>
+  </div>
+  <p class="babel-line" id="babelLine" hidden></p>
+</header>
+
+<main id="main"><div class="col" id="log"><section class="moment" id="moment"></section></div></main>
+
+
+
+<aside class="side" id="side" aria-label="Word details" aria-hidden="true">
+  <div class="bar-top"><span class="mono">word</span><button class="close" id="sideClose" type="button" aria-label="Close">✕</button></div>
+  <div class="body" id="sideBody"></div>
+</aside>
+
+<script>
+const DATA = __DATA__;
+const MOMENT = __MOMENT__;
+const INKS = ["#6EC6FF","#FF8FC7","#7EE0A1","#FFD166","#B39DFF","#FFA06B","#5FD3D0","#FF7A85"];
+const V = 262145, inks = {};
+const ink = u => u === "parametric" ? "var(--graphite)" : (inks[u] = inks[u] || INKS[Object.keys(inks).length % INKS.length]);
+const label = u => u === "parametric" ? "The model itself" : u;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const show = s => esc((s.trim() || s).replace(/\n/g, "⏎"));
+const pct = x => (x * 100 >= 10 || x === 0 ? Math.round(x * 100) : (x * 100).toFixed(1)) + "%";
+const bits = p => -Math.log2(Math.max(p, 1e-300));
+const fmt = b => (b >= 100 ? Math.round(b) : b.toFixed(1)) + " bits";
+const peopleOf = sh => Object.entries(sh).filter(([u]) => u !== "parametric").sort((a,b) => b[1]-a[1]);
+const peopleShare = s => peopleOf(s.sh).reduce((t,[,v]) => t+v, 0);
+// A word people influenced: a visible share of its probability came from them, or their words turned the path here.
+const influenced = s => peopleShare(s) >= 0.05 || (s.alone != null && peopleOf(s.sh).length > 0);
+const isFork = s => s.alone != null && peopleOf(s.sh).length > 0;
+
+// Walls: solid where only one word was really possible; broken into openings as more words were open
+// (log scale, fully broken at 100 or more). Babel, where all 262,145 are open, is the "Babel-space" view.
+function wall(open){
+  const g = open <= 1 ? 0 : 0.18 + 0.67 * Math.min(1, Math.log(open) / Math.log(100)), dash = (8 * (1 - g)).toFixed(1);
+  return g ? `repeating-linear-gradient(to right, var(--ink) 0 ${dash}px, transparent ${dash}px 8px)` : "var(--ink)";
+}
+function mark(s){
+  // A highlighter stroke in the ink of whoever's words carried most of this word, stronger the bigger the people's share.
+  const share = peopleShare(s);
+  return share < 0.05 ? "transparent" : `color-mix(in srgb, ${ink(peopleOf(s.sh)[0][0])} ${Math.round(25 + 60 * share)}%, transparent)`;
+}
+// Replies use markdown; show it as plain prose: drop bold markers, turn list stars into bullets.
+const plain = part => part.replace(/\*\*/g, "").replace(/^(\s*)\*(\s)/, "$1•$2");
+function noise(word, seed){ let s = seed * 7919 + 17, o = ""; for (const ch of word){ s = (s * 48271) % 2147483647; o += /\s/.test(ch) ? ch : "abcdefghijklmnopqrstuvwxyz,. "[s % 29] } return o }
+
+// ---------- the pieces both inspectors use ----------
+const sharesSorted = s => Object.entries(s.sh).sort((a,b) => a[0] === "parametric" ? -1 : b[0] === "parametric" ? 1 : b[1]-a[1]);
+const bar = s => `<div class="bar">${sharesSorted(s).map(([u,v]) => `<span style="--c:${ink(u)};flex:${v}" title="${esc(label(u))} ${pct(v)}"></span>`).join("")}</div>`;
+const shareRows = rows => `<ul class="shares">${rows.map(([u,v]) => `<li><span><span class="sw" style="--c:${ink(u)}"></span>${esc(label(u))}</span><span>${pct(v)}</span></li>`).join("")}</ul>`;
+function cfRows(s, n){
+  // "Without each person", most consequential first: the biggest drop, and anyone whose removal changes the word.
+  const rows = Object.entries(s.cf).map(([u, [pc, top, flips]]) => ({u, pc, top, flips, d: s.p - pc}))
+    .sort((a,b) => (b.flips - a.flips) || (b.d - a.d));
+  const shown = n ? rows.filter(r => r.flips || Math.abs(r.d) >= 0.005).slice(0, n) : rows;
+  if (!shown.length) return "";
+  return `<table><tr><th>Removed</th><th>This word</th><th>Would write</th></tr>${shown.map(r =>
+    `<tr><td><span class="sw" style="--c:${ink(r.u)}"></span>${esc(r.u)}</td><td>${pct(s.p)} to ${pct(r.pc)}</td><td class="${r.flips ? "flip" : ""}">${show(r.top)}${r.flips ? " (changes)" : ""}</td></tr>`).join("")}</table>`;
+}
+function turnRows(steps, i){
+  // The turn, side by side: a few words of context, then what the model alone would have said and what was said.
+  const s = steps[i], ctx = esc(steps.slice(Math.max(0, i - 4), i).map(x => x.t).join("").replace(/\n/g, " ").trimStart());
+  const people = peopleOf(s.sh), names = people.slice(0, 2).map(([u]) => esc(u)).join(" and ");
+  return `<div class="turn"><div class="row alone"><span class="mono">model alone</span><span><span class="ctx">…${ctx}</span><b>${esc(s.alone)}</b></span></div>
+    <div class="row took" style="--c:${ink(people[0][0])}"><span class="mono">with ${names}</span><span><span class="ctx">…${ctx}</span><b>${esc(s.t)}</b></span></div></div>`;
+}
+const chosenLine = s => `Chosen with probability ${pct(s.p)}, a price of ${fmt(bits(s.p))}. The model alone gave it ${pct(s.plm)}.`;
+function alternatives(s){
+  const alts = s.doors.filter(d => d[1] >= 0.02).map(d => `“${show(d[0])}”`);
+  return s.open <= 1 || !alts.length ? "No other word was really possible here."
+    : `It could also have been ${alts.length > 1 ? alts.slice(0, -1).join(", ") + " or " + alts[alts.length-1] : alts[0]}${s.open - 1 > alts.length ? `, among ${s.open - 1} other words` : ""}.`;
+}
+
+// ---------- hover card ----------
+function hoverCard(steps, i){
+  const s = steps[i];
+  if (!influenced(s)) return {simple: true, html: `<b>${show(s.t)}</b> is the model's own word. ${alternatives(s)} It cost ${fmt(bits(s.p))}. <span class="more">Click the word for more.</span>`};
+  // Like the inspector, but only the most influential: the model plus the top two people, and the three removals that matter most.
+  const rows = sharesSorted(s), top = rows.slice(0, 3), rest = rows.length - top.length;
+  const cf = cfRows(s, 3);
+  return {simple: false, html: `<p class="lbl">${isFork(s) ? "the path turned here" : "from memory"}</p>
+    <p class="big">${show(s.t)}</p>
+    ${isFork(s) ? turnRows(steps, i) : `<p class="meta">${chosenLine(s)}</p>`}
+    ${bar(s)}${shareRows(top)}${rest > 0 ? `<p class="meta">and ${rest} more</p>` : ""}
+    ${cf ? `<p class="sec">without each person</p>${cf}` : ""}
+    <p class="hint">Click the word for the full breakdown.</p>`};
+}
+
+// ---------- sidebar: the full breakdown, only after a click ----------
+function sidebar(a, steps, i){
+  const s = steps[i], others = peopleOf(s.sh).filter(([u]) => u !== a.who);
+  let h = `<p class="lbl">${isFork(s) ? "from memory · the path turned here" : "from memory"}</p><p class="big">${show(s.t)}</p>
+    <p class="meta">${chosenLine(s)} ${s.open} word${s.open === 1 ? "" : "s"} held 95% of the odds here.</p>
+    ${isFork(s) ? `<div style="margin-top:10px">${turnRows(steps, i)}</div>` : ""}
+    ${bar(s)}${shareRows(sharesSorted(s))}
+    <p class="meta" style="margin-top:6px">These shares are exact: the word's probability is a sum of the model's part and each stored text's part.</p>`;
+  if (others.length) h += `<p class="flag" style="border-color:var(--hair)">Found by <b>${esc(a.who)}</b>: their question is what pulled ${others.map(([u]) => esc(u) + "'s").join(", ")} words off the shelf here.</p>`;
+  if (s.weak) h += `<p class="flag">The closest stored text was far from this context (${s.near}× the typical distance). Retrieval matches by similarity, not by truth.</p>`;
+  h += `<p class="sec">without each person</p>${cfRows(s, 0) || `<p class="meta">No one's removal changes this word.</p>`}<p class="meta">Same sentence so far, that person's texts removed, the rest re-searched.</p>`;
+  h += `<p class="sec">stored texts it matched</p><ul class="nb">${s.nb.map(n => {
+    const tag = n.ok ? "Pointed to this word" : n.f ? `Pointed to “${show(n.v)}”, ruled out: the model alone didn't find it fluent here` : `Pointed to “${show(n.v)}” instead`;
+    return `<li class="${n.ok ? "" : "other"}" style="--c:${ink(n.u)}"><span class="src">${esc(n.u)}</span><br><span class="meta">${tag}. Weight ${pct(n.w)}.</span></li>` }).join("")}</ul><p class="meta" style="margin-top:6px">Their words stayed at the installation: only names and weights travel on the stick.</p>`;
+  h += `<p class="sec">top choices</p><table><tr><th>Model alone</th><th>With the stream</th></tr>${s.lm5.map((x, j) =>
+    `<tr><td>${show(x[0])} <span class="meta">${pct(x[1])}</span></td><td>${show(s.fin5[j][0])} <span class="meta">${pct(s.fin5[j][1])}</span></td></tr>`).join("")}</table>`;
+  return h;
+}
+const side = document.getElementById("side");
+function openSide(html){ document.getElementById("sideBody").innerHTML = html; side.classList.add("open"); side.setAttribute("aria-hidden", "false") }
+function closeSide(){ side.classList.remove("open"); side.setAttribute("aria-hidden", "true"); document.querySelectorAll(".w.picked").forEach(w => w.classList.remove("picked")) }
+document.getElementById("sideClose").onclick = closeSide;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSide() });
+
+// ---------- a turn ----------
+function turn(a, n){
+  // trim at the first markdown list so the sketch shows prose
+  const steps = a.steps;
+  const box = document.createElement("section");
+  box.innerHTML = `<div class="ask"><span class="who mono">${esc(a.who)}</span><br><p>${esc(a.q)}</p></div>`;
+  const reply = document.createElement("div"); reply.className = "reply";
+  const text = document.createElement("p"); text.className = "text";
+  steps.forEach((s, i) => {
+    s.t.split("\n").forEach((raw, j) => {
+      if (j) text.appendChild(document.createElement("br"));
+      const part = plain(raw);
+      if (!part) return;
+      if (!part.trim()){ text.appendChild(document.createTextNode(part)); return }
+      const w = document.createElement("span"); w.className = "w"; w.textContent = part; w.dataset.i = i;
+      w.dataset.word = part; w.dataset.noise = noise(part, n * 1000 + i);
+      w.style.setProperty("--wall", wall(s.open));
+      w.style.setProperty("--mark", mark(s));
+      w.tabIndex = 0;
+      if (j === 0 && isFork(s)){
+        const k = document.createElement("i"); k.className = "notch"; k.style.setProperty("--c", ink(peopleOf(s.sh)[0][0]));
+        k.setAttribute("aria-hidden", "true"); w.appendChild(k); w.classList.add("fork");
+        w.setAttribute("aria-label", `${part}: the path turned here`);
+      }
+      text.appendChild(w);
+    });
+  });
+  const hc = document.createElement("div"); hc.className = "hc"; hc.setAttribute("role", "status");
+  reply.append(text, hc);
+
+  const babel = () => document.body.classList.contains("babel");
+  const focus = w => {
+    reply.querySelectorAll(".w.on").forEach(x => x.classList.remove("on"));
+    hc.classList.remove("show");
+    if (!w || babel()) return;
+    w.classList.add("on");
+    const {simple, html} = hoverCard(steps, +w.dataset.i);
+    hc.className = "hc" + (simple ? " simple" : ""); hc.innerHTML = html; hc.classList.add("show");
+    // Above the word, clear of its wall and notch; below it when there's no room above in the window.
+    const r = w.getBoundingClientRect(), R = reply.getBoundingClientRect(), h = hc.offsetHeight;
+    hc.style.left = Math.max(0, Math.min(r.left - R.left - 12, R.width - hc.offsetWidth)) + "px";
+    const top = document.getElementById("main").getBoundingClientRect().top;
+    hc.style.top = (r.top - h - 26 > top ? r.top - R.top - h - 26 : r.bottom - R.top + 22) + "px";
+  };
+  const pick = w => {
+    if (babel()) return;
+    document.querySelectorAll(".w.picked").forEach(x => x.classList.remove("picked"));
+    w.classList.add("picked");
+    openSide(sidebar(a, steps, +w.dataset.i));
+  };
+  text.addEventListener("mouseover", e => { const w = e.target.closest(".w"); if (w) focus(w) });
+  text.addEventListener("focusin", e => { const w = e.target.closest(".w"); if (w) focus(w) });
+  text.addEventListener("click", e => { const w = e.target.closest(".w"); if (w){ focus(w); pick(w) } });
+  text.addEventListener("keydown", e => { const w = e.target.closest(".w"); if (w && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); pick(w) } });
+  reply.addEventListener("mouseleave", () => focus(null));
+
+  // foot: one plain sentence (who shaped it, what the question cost and bought), then the user-trained response
+  const who = {}; steps.forEach(s => Object.entries(s.sh).forEach(([u,v]) => { if (u !== "parametric") who[u] = (who[u] || 0) + v }));
+  const shaped = Object.entries(who).sort((x,y) => y[1]-x[1]);
+  const names = shaped.map(([u]) => `<span class="nm" style="--c:${ink(u)}">${esc(u)}</span>`);
+  const list = names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0];
+  const foot = document.createElement("div"); foot.className = "foot";
+  foot.innerHTML = `<p class="told">${shaped.length ? `Shaped by ${list}.` : "No one's words here, only the model's."}
+    <button class="fare" type="button">Your question cost ${Math.round(a.spent)} bits to ask, and made this reply ${Math.round(Math.abs(a.bought))} bits ${a.bought >= 0 ? "easier" : "harder"} to find.</button></p>
+    <button class="linkish" type="button">see fully user-trained response</button>`;
+  const stripes = a.adapters.map((u,k) => `${ink(u)} ${k*4}px ${(k+1)*4}px`).join(",");
+  const crowd = document.createElement("div"); crowd.className = "crowd"; crowd.hidden = true;
+  crowd.innerHTML = `<span class="mono">fully user-trained response: everyone's training, averaged, so it can't be split by person</span><br><p style="--stripes:repeating-linear-gradient(90deg, ${stripes})">${esc(a.crowd.split("\n")[0].slice(0, 260))}…</p>`;
+  const hear = foot.querySelector(".linkish");
+  hear.onclick = () => { crowd.hidden = false; hear.remove() };
+  foot.querySelector(".fare").onclick = () => openSide(`<p class="lbl">market prices</p><p class="big">${(a.bought / a.spent).toFixed(1)}× return</p>
+    <p class="meta">Your question cost <b>${fmt(a.spent)}</b> to reach. After it, this reply cost ${fmt(a.with)}; after an empty question, ${fmt(a.without)}. So it saved the reply <b>${fmt(a.bought)}</b>. In Babel this reply costs ${fmt(a.babel)}, whatever you ask: a prompt is a short address that works because human writing has already made most of the trip cheap.</p>`);
+  reply.append(foot, crowd);
+  box.appendChild(reply);
+  return box;
+}
+
+function babelLine(){
+  // Exponent for the longer of the replies on the page: how many texts of that length Babel holds.
+  const n = Math.max(...[...document.querySelectorAll(".text")].map(t => new Set([...t.querySelectorAll(".w")].map(w => w.dataset.i)).size));
+  return `In Babel-space, every one of ${V.toLocaleString()} words is equally likely at each step. A reply of ${n} words becomes one of about 10<sup>${Math.round(n * Math.log10(V))}</sup> texts of its length, all equally likely, and none of them anyone's.`;
+}
+
+function renderMoment(){
+  const M = MOMENT, r = M.readings;
+  // where the model-alone reading leaves the reply: the fork the stream made
+  let k = 0; while (k < r.stream.length && r.stream[k] === r.alone[k]) k++;
+  const split = (t, n) => `${esc(t.slice(0, n))}<b class="diverge">${esc(t.slice(n))}</b>`;
+  document.getElementById("moment").innerHTML = `
+    <p class="mono">taken ${esc(M.taken)} · by ${esc(M.by)} · the stream held ${M.stream_messages} messages from ${M.stream_people} people</p>
+    <p class="mono" style="margin-top:18px">this stick holds an address, not the reply</p>
+    <p class="addr">${esc(M.address.replace(/ /g, "_"))}</p>
+    <p class="meta">${M.address_chars} character${M.address_chars === 1 ? "" : "s"} of the Library of Babel's alphabet, about ${Math.round(M.address_bits)} bits. In Babel, with no weighting, this reply's address is the reply itself: ${M.babel_chars} characters, about ${Math.round(M.babel_bits)} bits.</p>
+    <div class="readings">
+      <div><span class="mono">read with the stream as it was</span><p>${esc(r.stream)}</p></div>
+      <div><span class="mono">read with the model alone, no one's words</span><p>${split(r.alone, k)}</p></div>
+      <div><span class="mono">read in Babel, with no weighting</span><p class="addr small">${esc(r.babel.replace(/ /g, "_"))}</p></div>
+    </div>
+    <p class="meta">One address, three readings. The words aren't stored anywhere: they're found again each time, and what you find depends on the weighting everyone's writing made. Below, the reply as it was found, word by word.</p>`;
+}
+renderMoment();
+DATA.forEach((a, n) => document.getElementById("log").appendChild(turn(a, n)));
+
+document.getElementById("walls").onclick = e => {
+  const on = !document.body.classList.contains("babel");
+  document.body.classList.toggle("babel", on);
+  e.currentTarget.setAttribute("aria-pressed", String(on));
+  document.querySelectorAll(".w").forEach(w => w.firstChild.nodeValue = on ? w.dataset.noise : w.dataset.word);
+  const line = document.getElementById("babelLine"); line.hidden = !on; if (on) line.innerHTML = babelLine();
+  document.querySelectorAll(".hc").forEach(h => h.classList.remove("show"));
+  closeSide();
+};
+</script>
+
+</body>
+</html>

@@ -12,3 +12,6 @@ __pycache__/
 
 # Local backups
 data/backup-*/
+
+# Moments taken away on USB sticks (copies of the stream; built on demand)
+data/moments/

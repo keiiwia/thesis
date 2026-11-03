@@ -21,6 +21,8 @@ LORA_R = int(os.environ.get("LORA_R", 8))
 LORA_ALPHA = float(os.environ.get("LORA_ALPHA", 16))
 TRAIN_STEPS = int(os.environ.get("TRAIN_STEPS", 30))   # optimizer steps per new text
 LR = float(os.environ.get("LR", 5e-4))
+# "mean": switched-on adapters are averaged, so thirteen people don't push thirteen times as hard. "sum": added at full strength.
+ADAPTER_MIX = os.environ.get("ADAPTER_MIX", "mean")
 # Attention projections only. The MLPs stay untouched, so they still match the base model.
 TARGETS = ("q_proj", "k_proj", "v_proj", "o_proj")
 
@@ -35,6 +37,7 @@ class MultiLoRALinear(nn.Module):
         self.base, self.r, self.scale = base, r, alpha / r
         self.A, self.B = nn.ParameterDict(), nn.ParameterDict()
         self.active = []
+        self.mix = 1.0          # each active adapter's weight in the blend
 
     def add(self, key):
         dev = self.base.weight.device
@@ -50,7 +53,7 @@ class MultiLoRALinear(nn.Module):
     def forward(self, x):
         y = self.base(x)
         for k in self.active:
-            y = y + (x @ self.A[k].t()) @ self.B[k].t() * self.scale
+            y = y + (x @ self.A[k].t()) @ self.B[k].t() * (self.scale * self.mix)
         return y
 
 
@@ -79,7 +82,7 @@ class Backend:
         self.stop_ids = {self.tok.convert_tokens_to_ids("<end_of_turn>"), self.tok.eos_token_id}
         self._rm = None
         self.train_settings = {"rank": LORA_R, "alpha": LORA_ALPHA, "steps_per_text": TRAIN_STEPS,
-                               "lr": LR, "layers": list(TARGETS)}
+                               "lr": LR, "layers": list(TARGETS), "trained": "alone, no end marker"}
 
     # ---------- shared ----------
     def _prefix(self, user_msg):
@@ -108,6 +111,32 @@ class Backend:
                 keys.append(H[i]); vals.append(ids[i + 1]); spans.append((s - L, e - L))
         return np.array(keys, dtype=np.float32), vals, spans
 
+    @torch.inference_mode()  # see GRAD_NOTE
+    def continuation_probs(self, prefix_ids, target_ids, users=(), top_p=None, cap=100):
+        """With users' adapters on: the hidden state before each target token, the probability the model gave it,
+        and (with top_p) the set of words the model found fluent there, as in knn_core.plausible."""
+        self.set_active(list(users))
+        P, T = list(prefix_ids), list(target_ids)
+        H = self._hidden(P + T)[len(P) - 1:-1]
+        logits = self.model.lm_head(H).float()
+        if self.softcap:
+            logits = torch.tanh(logits / self.softcap) * self.softcap
+        probs = torch.softmax(logits, -1)
+        p = probs.gather(1, torch.tensor(T, device=DEVICE)[:, None])[:, 0]
+        allowed = None
+        if top_p:
+            v, i = probs.topk(cap, -1)
+            n = (torch.cumsum(v, -1) < top_p).sum(-1) + 1
+            allowed = [set(i[r, :int(n[r])].tolist()) for r in range(len(T))]
+        self.set_active([])
+        return H.float().cpu().numpy(), p.double().cpu().numpy(), allowed
+
+    def reply_probs(self, text, users=(), top_p=None):
+        """Same, for text as a reply to INGEST_PROMPT (how people's words are stored). Also returns its tokens."""
+        T = self._ids(text)
+        H, p, allowed = self.continuation_probs(self._ids(self._prefix(INGEST_PROMPT)), T, users, top_p)
+        return H, T, p, allowed
+
     def prompt_ids(self, question):
         return self._ids(self._prefix(question))
 
@@ -128,8 +157,9 @@ class Backend:
 
     def set_active(self, users):
         ks = [self.keys[u] for u in users if u in self.keys]
+        mix = 1.0 / len(ks) if ks and ADAPTER_MIX == "mean" else 1.0
         for l in self.loras:
-            l.active = ks
+            l.active, l.mix = ks, mix
 
     def remove_adapter(self, user):
         k = self.keys.pop(user, None)
@@ -138,7 +168,9 @@ class Backend:
                 l.drop(k)
 
     def train(self, user, texts, reset=False):
-        """Continue training this user's adapter on texts, with every existing adapter switched on."""
+        """Continue training this user's adapter on texts, with only that adapter switched on.
+        Each adapter learns one person's words from the untouched model, so "only X" means X alone,
+        and blending them at answer time doesn't compound everyone's training."""
         if reset:
             self.remove_adapter(user)
         if user not in self.keys:
@@ -147,11 +179,13 @@ class Backend:
                 l.add(self.keys[user])
         k = self.keys[user]
         params = [l.A[k] for l in self.loras] + [l.B[k] for l in self.loras]
-        self.set_active(self.adapter_users())
+        self.set_active([user])
         prefix_len = len(self._ids(self._prefix(INGEST_PROMPT)))
         examples = []
         for t in texts:
-            ids = self._ids(self._prefix(INGEST_PROMPT) + t + "<end_of_turn>\n")
+            # No end-of-reply marker: a person's message isn't a whole answer to every question, and training
+            # on the marker taught blended adapters to stop after a few words.
+            ids = self._ids(self._prefix(INGEST_PROMPT) + t)
             labels = [-100] * prefix_len + ids[prefix_len:]
             examples.append((torch.tensor([ids], device=DEVICE), torch.tensor([labels], device=DEVICE)))
         opt = torch.optim.AdamW(params, lr=LR, weight_decay=0.0)

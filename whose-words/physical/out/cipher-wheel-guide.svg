@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in" viewBox="0 0 816 1056">
+<title>cipher wheel · guide</title><style>text{font-family:Helvetica,Arial,sans-serif;fill:#000} .h{font-size:16px;font-weight:700} .t{font-size:13px}
+.s{font-size:11px;fill:#444} .L{font-family:Menlo,Courier,monospace;font-size:26px;font-weight:700} .n{font-size:12px;fill:#444}
+.c{font-family:Menlo,Courier,monospace;font-size:19px;letter-spacing:2px} .k{font-family:Menlo,Courier,monospace;font-size:12px;fill:#444}</style><rect width="816" height="1056" fill="#fff"/>
+<text x="48" y="60" class="h">How the wheel works</text>
+<text x="48" y="92" class="t">1. Pin the inner disk on the outer disk through both centres.</text>
+<text x="48" y="114" class="t">2. Turn the inner disk until the card's key number sits under the red mark.</text>
+<text x="48" y="136" class="t">3. For each character on the card, find it on the inner disk and write down the outer letter next to it.</text>
+<text x="48" y="158" class="t">   “_” is a space. Space, comma and period are letters like any other, so the card hides even where words end.</text>
+<text x="48" y="196" class="h">Why every reply fits</text>
+<text x="48" y="222" class="t">The Library of Babel has 29 characters: a to z, space, comma, period. Before a reply goes on a card, it's</text>
+<text x="48" y="242" class="t">written in that alphabet, so the same wheel decodes any reply the model writes:</text>
+<text x="66" y="272" class="t">capitals → lowercase</text><text x="66" y="292" class="t">? and ! → a period</text><text x="66" y="312" class="t">: and ; → a comma</text><text x="66" y="332" class="t">digits → spelled out (24 → twenty four)</text><text x="66" y="352" class="t">line breaks, dashes, slashes → a space</text><text x="66" y="372" class="t">everything else → dropped (quotes, apostrophes, stars…)</text>
+<text x="48" y="420" class="h">What the key is, and isn't</text>
+<text x="48" y="446" class="t">A key is one setting out of 29: 4.86 bits. A reply of 70 characters costs 340 bits in Babel. The key doesn't</text>
+<text x="48" y="466" class="t">find the reply; the reply is already on the card. Try the wrong key and you get readable-looking noise that costs</text>
+<text x="48" y="486" class="t">exactly as much in Babel. Nothing on the wheel marks the right key. You know it's right because it reads as</text>
+<text x="48" y="506" class="t">language, and that sense comes from reading: from the weighting. The visitor plays the model.</text>
+<text x="48" y="544" class="h">Making cards</text>
+<text x="48" y="570" class="t">Any reply on the whose-words page: “print as a Babel card” under the reply. Any text:</text>
+<text x="66" y="592" class="k">uv run python physical/cipher_wheel.py card --text "…" --key 18</text>
+</svg>

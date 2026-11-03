@@ -18,6 +18,7 @@ class Datastore:
         self.meta = []  # one dict per entry: user_id, entry_id, char_start, char_end
         self.entries = []  # one dict per ingested text: entry_id, user_id, text
         self.next_id = 0
+        self._uids = None  # numpy copy of meta user_ids, for fast masking; rebuilt on change
 
     def __len__(self):
         return len(self.values)
@@ -34,12 +35,14 @@ class Datastore:
         for s, e in char_spans:
             self.meta.append({"user_id": user_id, "entry_id": entry_id,
                               "char_start": int(s), "char_end": int(e)})
+        self._uids = None
         return entry_id
 
     def remove_entry(self, entry_id):
         keep = np.array([m["entry_id"] != entry_id for m in self.meta], dtype=bool)
         self.keys, self.values = self.keys[keep], self.values[keep]
         self.meta = [m for m, k in zip(self.meta, keep) if k]
+        self._uids = None
         before = len(self.entries)
         self.entries = [e for e in self.entries if e["entry_id"] != entry_id]
         return len(self.entries) < before
@@ -68,6 +71,12 @@ class Datastore:
         ds.meta, ds.entries, ds.next_id = info["meta"], info["entries"], info["next_id"]
         return ds
 
+    def user_mask(self, users):
+        """True for every stored position written by one of users."""
+        if self._uids is None:
+            self._uids = np.array([m["user_id"] for m in self.meta], dtype=object)
+        return np.isin(self._uids, list(users)) if len(self._uids) else np.zeros(0, dtype=bool)
+
     def users(self):
         return sorted({m["user_id"] for m in self.meta})
 
@@ -78,8 +87,7 @@ class Datastore:
         q = np.asarray(query, dtype=np.float32)
         d2 = ((self.keys - q) ** 2).sum(axis=1)
         if exclude_users:
-            mask = np.array([m["user_id"] in exclude_users for m in self.meta])
-            d2 = np.where(mask, np.inf, d2)
+            d2 = np.where(self.user_mask(exclude_users), np.inf, d2)
         k = min(k, int(np.isfinite(d2).sum()))
         if k == 0:
             return np.zeros(0, dtype=np.int64), np.zeros(0, dtype=np.float32)
@@ -97,13 +105,37 @@ def neighbor_weights(d2, temp):
     return w / w.sum()
 
 
-def knn_step(ds, query, p_lm, lam, k, temp, exclude_users=()):
-    """One decoding step. Returns the full interpolated distribution plus neighbor details."""
+def plausible(p, top_p, cap=100):
+    """The words the untouched model itself finds fluent here: its top-p nucleus, at most cap words.
+    None (no filter) when top_p is falsy."""
+    if not top_p:
+        return None
+    p = np.asarray(p)
+    top = np.argpartition(-p, cap)[:cap]
+    top = top[np.argsort(-p[top])]
+    return set(top[:int(np.searchsorted(np.cumsum(p[top]), top_p) + 1)].tolist())
+
+
+def votes(ds, query, k, temp, exclude_users=(), allowed=None):
+    """Retrieve neighbors and weight them. With allowed (see plausible), neighbors pointing to words outside it
+    get weight 0 and the rest are renormalized: the stream chooses among words the model already finds fluent,
+    instead of overriding its grammar. Returns idx, d2, w, and whether any vote survived."""
     idx, d2 = ds.search(query, k, exclude_users)
     w = neighbor_weights(d2, temp)
-    lam_eff = lam if len(idx) > 0 else 0.0
+    if allowed is not None and len(idx):
+        w = np.where([int(v) in allowed for v in ds.values[idx]], w, 0.0)
+        if w.sum() == 0:
+            return idx, d2, w, False
+        w = w / w.sum()
+    return idx, d2, w, len(idx) > 0
+
+
+def knn_step(ds, query, p_lm, lam, k, temp, exclude_users=(), allowed=None):
+    """One decoding step. Returns the full interpolated distribution plus neighbor details."""
+    idx, d2, w, live = votes(ds, query, k, temp, exclude_users, allowed)
+    lam_eff = lam if live else 0.0
     p_final = (1.0 - lam_eff) * np.asarray(p_lm, dtype=np.float64)
-    if len(idx):
+    if live:
         np.add.at(p_final, ds.values[idx], lam_eff * w)
     return {"p_final": p_final, "idx": idx, "d2": d2, "w": w, "lam_eff": lam_eff}
 
@@ -120,24 +152,44 @@ def decompose(ds, step, p_lm, token):
     return {key: v / total for key, v in parts.items()}, float(total)
 
 
-def calibrate_temp(ds, n_sample=500, seed=0):
-    """Median squared distance from an entry to its nearest *other* entry.
+def knn_token_prob(ds, query, p_token, token, lam, k, temp, exclude_users=(), allowed=None):
+    """p_final(token) alone: the model's probability for token mixed with the neighbors' votes for it."""
+    idx, d2, w, live = votes(ds, query, k, temp, exclude_users, allowed)
+    if not live:
+        return float(p_token)
+    return (1.0 - lam) * float(p_token) + lam * float(w[ds.values[idx] == token].sum())
+
+
+def calibrate_temp(ds, n_sample=500, seed=0, exclude_users=()):
+    """Median squared distance from an entry to its nearest *other* entry, among entries not
+    written by exclude_users (so a flood of near-copies can't shrink the scale).
 
     Heuristic, not from the kNN-LM paper: the paper used raw distances with its own
     model's key scale. Gemma's hidden-state scale differs, so we set temp to a typical
     nearest-neighbor distance. Tune it and watch how peaked the weights get.
     """
-    n = len(ds)
+    keys = ds.keys[~ds.user_mask(exclude_users)] if exclude_users else ds.keys
+    n = len(keys)
     if n < 2:
         return 1.0
     rng = np.random.default_rng(seed)
     sample = rng.choice(n, size=min(n_sample, n), replace=False)
     nn = []
     for i in sample:
-        d2 = ((ds.keys - ds.keys[i]) ** 2).sum(axis=1)
+        d2 = ((keys - keys[i]) ** 2).sum(axis=1)
         d2[i] = np.inf
         nn.append(d2.min())
     return float(np.median(nn))
+
+
+def knn_entropy(ds, step):
+    """Entropy (nats) of the stream's own vote over next tokens, before mixing with the model.
+    0 means every neighbor agreed; log(k) means k neighbors each pointed somewhere different."""
+    votes = {}
+    for i, wi in zip(step["idx"], step["w"]):
+        v = int(ds.values[i])
+        votes[v] = votes.get(v, 0.0) + float(wi)
+    return max(0.0, entropy(np.array(list(votes.values())))) if votes else 0.0
 
 
 def entropy(p):
@@ -145,15 +197,14 @@ def entropy(p):
     return float(-(p * np.log(p)).sum())
 
 
-def knn_point(ds, query, p_lm, lam, k, temp, exclude_users, token, lm_top):
+def knn_point(ds, query, p_lm, lam, k, temp, exclude_users, token, lm_top, allowed=None):
     """Like knn_step but without building the full vocab-sized distribution.
 
     Returns p_final(token) and the argmax token. The argmax must be the LM's own top token
     or one of the retrieved neighbors' tokens, since only those can beat the LM's top token.
     """
-    idx, d2 = ds.search(query, k, exclude_users)
-    w = neighbor_weights(d2, temp)
-    lam_eff = lam if len(idx) > 0 else 0.0
+    idx, d2, w, live = votes(ds, query, k, temp, exclude_users, allowed)
+    lam_eff = lam if live else 0.0
     boost = {}
     for i, wi in zip(idx, w):
         v = int(ds.values[i])

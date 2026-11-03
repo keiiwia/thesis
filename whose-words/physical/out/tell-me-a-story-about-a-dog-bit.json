@@ -1,0 +1,113 @@
+{
+ "question": "Tell me a story about a dog.",
+ "reply": "Barnaby was a scruffy terrier mix, a bit of a goofball, and a dog with a heart bigger than his floppy ears. He lived in a small, dusty house on the edge of a sprawling, overgrown garden. The garden was a riot of color, a testament to the life",
+ "pos": 11,
+ "needle_deg": 153,
+ "chosen": 3103,
+ "vocab": 262145,
+ "context": "Barnaby was a scruffy terrier mix, a",
+ "words": [
+  {
+   "id": 151104,
+   "text": " whirlwind",
+   "alone": 0.45061028003692627,
+   "stream": 0.1351830840110779,
+   "votes": {}
+  },
+  {
+   "id": 33070,
+   "text": " creature",
+   "alone": 0.09487338364124298,
+   "stream": 0.028462015092372898,
+   "votes": {}
+  },
+  {
+   "id": 50704,
+   "text": " fluffy",
+   "alone": 0.07753685116767883,
+   "stream": 0.023261055350303653,
+   "votes": {}
+  },
+  {
+   "id": 6921,
+   "text": " mix",
+   "alone": 0.03664663806557655,
+   "stream": 0.010993991419672968,
+   "votes": {}
+  },
+  {
+   "id": 23791,
+   "text": " shade",
+   "alone": 0.030346497893333435,
+   "stream": 0.009103949368000032,
+   "votes": {}
+  },
+  {
+   "id": 122400,
+   "text": " symphony",
+   "alone": 0.022342242300510406,
+   "stream": 0.006702672690153123,
+   "votes": {}
+  },
+  {
+   "id": 22868,
+   "text": " breed",
+   "alone": 0.020782960578799248,
+   "stream": 0.006234888173639775,
+   "votes": {}
+  },
+  {
+   "id": 9378,
+   "text": " walking",
+   "alone": 0.019536150619387627,
+   "stream": 0.0058608451858162885,
+   "votes": {}
+  },
+  {
+   "id": 33626,
+   "text": " ginger",
+   "alone": 0.01869935728609562,
+   "stream": 0.005609807185828686,
+   "votes": {}
+  },
+  {
+   "id": 1707,
+   "text": " fact",
+   "alone": 0.018237363547086716,
+   "stream": 0.005471209064126016,
+   "votes": {}
+  },
+  {
+   "id": 13024,
+   "text": " shadow",
+   "alone": 0.017372431233525276,
+   "stream": 0.0052117293700575835,
+   "votes": {}
+  },
+  {
+   "id": 20456,
+   "text": " bundle",
+   "alone": 0.012954741716384888,
+   "stream": 0.003886422514915467,
+   "votes": {}
+  },
+  {
+   "id": 3103,
+   "text": " bit",
+   "alone": 0.008521374315023422,
+   "stream": 0.36041417606174947,
+   "votes": {
+    "Binna": 0.5112254023551941
+   }
+  },
+  {
+   "id": 4799,
+   "text": " dog",
+   "alone": 0.005693939048796892,
+   "stream": 0.34385043582879005,
+   "votes": {
+    "dog": 0.4887746572494507
+   }
+  }
+ ]
+}
